@@ -21,6 +21,9 @@ interface ParsedEntity {
   shape?: boolean;
   text?: string;
   startPoint?: { x: number; y: number };
+  endPoint?: { x: number; y: number };
+  textHeight?: number;
+  lineType?: string;
 }
 const isPolyline = (e: ParsedEntity) => e.type === "POLYLINE" || e.type === "LWPOLYLINE";
 
@@ -59,8 +62,8 @@ describe("DXF export", () => {
 
       const walls = polylines.filter((e) => e.layer === "WALLS");
       const roomTexts = entities.filter((e) => e.type === "TEXT" && e.layer === "ROOMS");
-      expect(walls).toHaveLength(layout.rooms.length);
-      expect(roomTexts).toHaveLength(layout.rooms.length);
+      expect(walls).toHaveLength(layout.rooms.length + 1);
+      const boxes: { left: number; right: number; bottom: number; top: number }[] = [];
       for (const room of layout.rooms) {
         const wall = walls.find((e) => {
           if (!e.vertices) return false;
@@ -73,10 +76,34 @@ describe("DXF export", () => {
         });
         expect(wall).toBeTruthy();
         expect(wall!.shape).toBe(true);
-        const label = roomTexts.find((e) => e.text?.includes(room.label));
-        expect(label).toBeTruthy();
-        expect(label!.text).toContain("sq ft");
+        const shortName: Record<string, string> = { "Master bedroom": "MBR", "Toilet (elderly)/Entrance side)": "Toilet", "Staircase (to first floor)": "Stair", "Verandah / foyer": "Foyer" };
+        const name = shortName[room.label] ?? room.label;
+        const area = `${(room.rect.w * room.rect.h).toFixed(1)} sq ft`;
+        const centerX = (room.rect.x + room.rect.w / 2) * 304.8;
+        const centerY = (30 - room.rect.y - room.rect.h / 2) * 304.8;
+        const position = (e: ParsedEntity) => e.endPoint ?? e.startPoint!;
+        const closest = (value: string) => roomTexts.filter((e) => e.text === value)
+          .sort((a, b) => Math.hypot(position(a).x - centerX, position(a).y - centerY) - Math.hypot(position(b).x - centerX, position(b).y - centerY))[0];
+        const nameText = closest(name);
+        const possibleArea = closest(area);
+        const areaText = possibleArea && Math.hypot(position(possibleArea).x - centerX, position(possibleArea).y - centerY) < Math.min(room.rect.w, room.rect.h) * 304.8 / 2 ? possibleArea : undefined;
+        expect(nameText).toBeTruthy();
+        const rect = { left: room.rect.x * 304.8, right: (room.rect.x + room.rect.w) * 304.8, bottom: (30 - room.rect.y - room.rect.h) * 304.8, top: (30 - room.rect.y) * 304.8 };
+        for (const entity of [nameText!, ...(areaText ? [areaText] : [])]) {
+          const p = position(entity), h = entity.textHeight!, half = (entity.text ?? "").length * 0.6 * h / 2;
+          expect(p.x - half).toBeGreaterThanOrEqual(rect.left - 0.01);
+          expect(p.x + half).toBeLessThanOrEqual(rect.right + 0.01);
+          expect(p.y - h / 2).toBeGreaterThanOrEqual(rect.bottom - 0.01);
+          expect(p.y + h / 2).toBeLessThanOrEqual(rect.top + 0.01);
+          boxes.push({ left: p.x - half, right: p.x + half, bottom: p.y - h / 2, top: p.y + h / 2 });
+        }
       }
+      expect(roomTexts.length).toBe(boxes.length);
+      for (let i = 0; i < boxes.length; i++) for (let j = i + 1; j < boxes.length; j++) {
+        const a = boxes[i], b = boxes[j];
+        expect(a.right <= b.left || b.right <= a.left || a.top <= b.bottom || b.top <= a.bottom).toBe(true);
+      }
+      expect((dxf.tables.layer.layers.BEAMS as unknown as { lineType: string }).lineType).toBe("DASHED");
       const columns = polylines.filter((e) => e.layer === "COLUMNS");
       expect(columns).toHaveLength(structural.members.columns.length);
       expect(columns.every((e) => e.shape && e.vertices?.length === 4)).toBe(true);
@@ -85,9 +112,9 @@ describe("DXF export", () => {
       expect(Math.max(...ys)).toBeCloseTo(9144, 0);
       const northRoom = [...layout.rooms].sort((a, b) => a.rect.y - b.rect.y)[0];
       const southRoom = [...layout.rooms].sort((a, b) => b.rect.y - a.rect.y)[0];
-      const northLabel = roomTexts.find((e) => e.text?.includes(northRoom.label));
-      const southLabel = roomTexts.find((e) => e.text?.includes(southRoom.label));
-      expect(northLabel!.startPoint!.y).toBeGreaterThan(southLabel!.startPoint!.y);
+      const northLabel = roomTexts.find((e) => e.text === (northRoom.label === "Master bedroom" ? "MBR" : northRoom.label));
+      const southLabel = roomTexts.find((e) => e.text === (southRoom.label === "Master bedroom" ? "MBR" : southRoom.label));
+      expect((northLabel!.endPoint ?? northLabel!.startPoint)!.y).toBeGreaterThan((southLabel!.endPoint ?? southLabel!.startPoint)!.y);
 
       const allNumbers: number[] = [];
       const collect = (value: unknown): void => {

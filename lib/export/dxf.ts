@@ -18,8 +18,8 @@ export interface DxfExportInput {
 
 const FT_TO_MM = 304.8;
 const LAYERS: [string, number][] = [
-  ["PLOT", 7], ["WALLS", 1], ["ROOMS", 3], ["DOORS_WINDOWS", 5],
-  ["COLUMNS", 2], ["BEAMS", 4], ["VASTU_GRID", 8], ["DIMENSIONS", 6], ["TEXT", 7],
+  ["PLOT", 7], ["WALLS", 7], ["ROOMS", 3], ["DOORS_WINDOWS", 5],
+  ["COLUMNS", 2], ["BEAMS", 8], ["VASTU_GRID", 8], ["DIMENSIONS", 6], ["TEXT", 7],
 ];
 
 export function buildDxf(input: DxfExportInput): string {
@@ -42,9 +42,10 @@ function generateDxf(input: DxfExportInput): string {
   // flip around the north-south plot extent so north is up in the CAD drawing.
   const xy = (xFt: number, yFt: number): [number, number] => [xFt * FT_TO_MM, (widthFt - yFt) * FT_TO_MM];
   const d = new Drawing();
+  d.addLineType("DASHED", "Dashed __ __ __", [300, -150]);
   d.setUnits("Millimeters");
   d.header("$INSUNITS", [[70, 4]]);
-  for (const [name, color] of LAYERS) d.addLayer(name, color, "CONTINUOUS");
+  for (const [name, color] of LAYERS) d.addLayer(name, color, name === "BEAMS" ? "DASHED" : "CONTINUOUS");
   const poly = (layer: string, pts: [number, number][]) => {
     d.setActiveLayer(layer).drawPolyline(pts, true);
   };
@@ -58,6 +59,9 @@ function generateDxf(input: DxfExportInput): string {
     xy(x, y), xy(x + w, y), xy(x + w, y + h), xy(x, y + h),
   ];
   poly("PLOT", rectPoints(0, 0, lengthFt, widthFt));
+  // dxf-writer does not expose entity or layer lineweight; this outer line
+  // gives the plot boundary a clear, heavier presentation at 150 mm offset.
+  poly("WALLS", rectPoints(-150 / FT_TO_MM, -150 / FT_TO_MM, lengthFt + 300 / FT_TO_MM, widthFt + 300 / FT_TO_MM));
 
   for (const room of layout.rooms ?? []) {
     const r = room.rect;
@@ -65,8 +69,22 @@ function generateDxf(input: DxfExportInput): string {
     poly("WALLS", rectPoints(r.x, r.y, r.w, r.h));
     const cx = (r.x + r.w / 2) * FT_TO_MM;
     const cy = (widthFt - (r.y + r.h / 2)) * FT_TO_MM;
-    const area = (r.w * r.h).toFixed(1);
-    text("ROOMS", cx, cy, 180, `${room.label} ${area} sq ft`, "center");
+    const areaLine = `${(r.w * r.h).toFixed(1)} sq ft`;
+    const shortName: Record<string, string> = {
+      "Master bedroom": "MBR",
+      "Toilet (elderly)/Entrance side)": "Toilet",
+      "Staircase (to first floor)": "Stair",
+      "Verandah / foyer": "Foyer",
+    };
+    const nameLine = shortName[room.label] ?? room.label;
+    const fits = (value: string, height: number) => value.length * 0.6 * height <= r.w * FT_TO_MM * 0.9;
+    const height = [200, 150, 120, 90].find((candidate) =>
+      fits(nameLine, candidate) && fits(areaLine, candidate) && candidate * 2 <= r.h * FT_TO_MM
+    );
+    const labelHeight = height ?? 90;
+    const showArea = height !== undefined;
+    text("ROOMS", cx, cy + (showArea ? labelHeight / 2 : 0), labelHeight, nameLine, "center");
+    if (showArea) text("ROOMS", cx, cy - labelHeight / 2, labelHeight, areaLine, "center");
     for (const mark of room.windows ?? []) {
       const a = wallMark(room, mark.wall, mark.at, widthFt);
       const b = wallMark(room, mark.wall, mark.at + mark.width, widthFt);
@@ -101,8 +119,8 @@ function generateDxf(input: DxfExportInput): string {
   for (const cell of vastuGrid) {
     const r = cell.rect;
     poly("VASTU_GRID", rectPoints(r.x, r.y, r.w, r.h));
-    const p = xy(r.x + r.w / 2, r.y + r.h / 2);
-    text("VASTU_GRID", p[0], p[1], 150, cell.zone, "center");
+    const p = xy(r.x, r.y);
+    text("VASTU_GRID", p[0], p[1], 100, cell.zone);
   }
   if (centerCell) poly("VASTU_GRID", rectPoints(centerCell.rect.x, centerCell.rect.y, centerCell.rect.w, centerCell.rect.h));
 
