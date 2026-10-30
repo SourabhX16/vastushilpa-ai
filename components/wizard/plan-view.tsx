@@ -6,6 +6,7 @@ import type {
   CheckStatus,
   StructuralResult,
 } from "@/lib/engine/structural/types";
+import type { EnergyResult, Season } from "@/lib/engine/energy/types";
 import { computeVastuGrid } from "@/lib/engine/vastuGrid";
 import { cn } from "@/lib/utils";
 
@@ -55,6 +56,11 @@ interface PlanViewProps {
   showStructure?: boolean;
   activeMember?: string | null;
   onSelectMember?: (id: string | null) => void;
+  energy?: EnergyResult | null;
+  showDaylightHeatmap?: boolean;
+  showVentilationArrows?: boolean;
+  showSunShading?: boolean;
+  season?: Season;
   className?: string;
 }
 
@@ -66,6 +72,11 @@ export function PlanView({
   showStructure = false,
   activeMember = null,
   onSelectMember,
+  energy = null,
+  showDaylightHeatmap = false,
+  showVentilationArrows = false,
+  showSunShading = false,
+  season = "summer",
   className,
 }: PlanViewProps) {
   const grid = useMemo(() => {
@@ -94,6 +105,11 @@ export function PlanView({
         structural={showStructure ? structural : null}
         activeMember={activeMember}
         onSelectMember={onSelectMember}
+        energy={energy}
+        showDaylightHeatmap={showDaylightHeatmap}
+        showVentilationArrows={showVentilationArrows}
+        showSunShading={showSunShading}
+        season={season}
       />
     </div>
   );
@@ -107,6 +123,11 @@ interface PlanSvgProps {
   structural?: StructuralResult | null;
   activeMember?: string | null;
   onSelectMember?: (id: string | null) => void;
+  energy: EnergyResult | null;
+  showDaylightHeatmap: boolean;
+  showVentilationArrows: boolean;
+  showSunShading: boolean;
+  season: Season;
 }
 
 function PlanSvg({
@@ -117,6 +138,11 @@ function PlanSvg({
   structural,
   activeMember,
   onSelectMember,
+  energy,
+  showDaylightHeatmap,
+  showVentilationArrows,
+  showSunShading,
+  season,
 }: PlanSvgProps) {
   const { lengthFt: L, widthFt: W, padas } = grid;
   const centre = grid.cells.find((c) => c.zone === "C");
@@ -146,6 +172,9 @@ function PlanSvg({
         </marker>
         <marker id="dimTick" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
           <path d="M1,3.2 L2,0.8 L3,3.2" fill="none" stroke={GOLD_DEEP} strokeWidth="0.5" />
+        </marker>
+        <marker id="ventArrow" markerWidth="5" markerHeight="5" refX="4.2" refY="2.5" orient="auto">
+          <path d="M0,0 L5,2.5 L0,5 Z" fill="#2f7d78" />
         </marker>
       </defs>
 
@@ -188,6 +217,66 @@ function PlanSvg({
       {/* rooms */}
       {layout?.rooms.map((room) => (
         <RoomShape key={room.id} room={room} L={L} W={W} />
+      ))}
+
+      {showDaylightHeatmap && energy?.rooms.flatMap((room) =>
+        room.daylightHeatmap.map((cell, i) => (
+          <rect
+            key={`daylight-${room.roomId}-${i}`}
+            x={cell.rect.x}
+            y={cell.rect.y}
+            width={cell.rect.w}
+            height={cell.rect.h}
+            fill="#d49a32"
+            fillOpacity={0.08 + Math.max(0, Math.min(100, cell.value)) / 250}
+            stroke="#a94e2a"
+            strokeOpacity="0.2"
+            strokeWidth="0.04"
+          >
+            <title>{room.roomLabel}: estimated daylight {cell.value}/100</title>
+          </rect>
+        )),
+      )}
+
+      {showSunShading && energy && layout?.rooms.flatMap((room) =>
+        room.windows.map((mark, index) => {
+          const window = energy.windows.find((candidate) => candidate.roomId === room.id && candidate.index === index);
+          const segment = windowSegment(room, mark, L, W);
+          if (!window || !segment) return null;
+          const exposure = season === "winter" ? window.winterExposure : window.summerExposure;
+          const offset = 0.18 + Math.min(1, window.requiredOverhangFt / 6) * 0.36;
+          return (
+            <line
+              key={`shade-${room.id}-${index}`}
+              x1={segment.x1 + segment.nx * offset}
+              y1={segment.y1 + segment.ny * offset}
+              x2={segment.x2 + segment.nx * offset}
+              y2={segment.y2 + segment.ny * offset}
+              stroke="#d66a32"
+              strokeWidth="0.42"
+              strokeOpacity={0.25 + Math.min(0.75, exposure / 3)}
+              strokeLinecap="round"
+            >
+              <title>{room.label}: {season} exposure {exposure.toFixed(1)} sun-hours; estimated overhang {window.requiredOverhangFt.toFixed(1)} ft, modeled reduction {window.overhangReductionPct}%</title>
+            </line>
+          );
+        }),
+      )}
+
+      {showVentilationArrows && energy?.arrows.map((arrow) => (
+        <line
+          key={`vent-${arrow.roomId}`}
+          x1={arrow.from.x}
+          y1={arrow.from.y}
+          x2={arrow.to.x}
+          y2={arrow.to.y}
+          stroke={arrow.kind === "cross" ? "#2f7d78" : "#6d9e97"}
+          strokeWidth="0.32"
+          strokeDasharray={arrow.kind === "cross" ? undefined : "0.7 0.45"}
+          markerEnd="url(#ventArrow)"
+        >
+          <title>{arrow.roomLabel}: estimated {arrow.kind} ventilation, {arrow.alignment} to prevailing wind</title>
+        </line>
       ))}
 
       {/* outer walls */}
