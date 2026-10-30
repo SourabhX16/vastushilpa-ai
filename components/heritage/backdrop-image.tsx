@@ -6,7 +6,7 @@ import Image from "next/image";
 /*
  * Fixed, full-viewport photo backdrop behind the SVG heritage layers.
  *
- * Photo is USER-SUPPLIED (app/public/bg/body-hero.webp) — confirm usage
+ * Photo is USER-SUPPLIED (public/bg/body-hero.webp) — confirm usage
  * rights before public release.
  *
  * - Decorative: alt="" / aria-hidden via the fixed container.
@@ -28,13 +28,20 @@ export default function BackdropImage() {
   useEffect(() => {
     if (!window.matchMedia("(min-width: 768px)").matches) return;
 
-    const schedule = (cb: () => void) =>
-      "requestIdleCallback" in window
-        ? window.requestIdleCallback(cb, { timeout: 2000 })
-        : window.setTimeout(cb, 1200);
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: IdleRequestOptions,
+      ) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    const schedule = (cb: () => void): number =>
+      idleWindow.requestIdleCallback
+        ? idleWindow.requestIdleCallback(cb, { timeout: 2000 })
+        : (globalThis.setTimeout(cb, 1200) as unknown as number);
     const cancel = (id: number) => {
-      if ("cancelIdleCallback" in window) window.cancelIdleCallback(id);
-      else window.clearTimeout(id);
+      if (idleWindow.cancelIdleCallback) idleWindow.cancelIdleCallback(id);
+      else globalThis.clearTimeout(id);
     };
 
     let cancelled = false;
@@ -49,7 +56,7 @@ export default function BackdropImage() {
 
     return () => {
       cancelled = true;
-      cancel(id as number);
+      cancel(id);
     };
   }, []);
 
