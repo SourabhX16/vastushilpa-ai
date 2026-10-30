@@ -49,8 +49,8 @@ export default function WizardShell() {
     goToStep(Math.max(0, step - 1));
   };
 
+  // Opaque cream card: must stay opaque over the fixed photo backdrop.
   return (
-    {/* Opaque cream card: must stay opaque over the fixed photo backdrop. */}
     <Card className="mx-auto w-full max-w-5xl border-gold-500/30 shadow-lg shadow-maroon-500/5">
       <CardHeader className="pb-0">
         <CardTitle className="justify-center flex items-center gap-4 pb-4">
