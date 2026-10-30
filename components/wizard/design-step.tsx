@@ -209,20 +209,25 @@ export function DesignStep() {
 
   return (
     <Tabs value={current.id} onValueChange={(v) => setMode(v as LayoutMode)} className="w-full min-w-0">
-      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,1.35fr)_auto] lg:items-center">
-        <TabsList className="flex h-auto w-full flex-wrap justify-start gap-1">
-          {layouts.map((layout) => (
-            <TabsTrigger
-              key={layout.id}
-              value={layout.id}
-              className="min-w-0 flex-1 px-2 text-sm data-[state=active]:text-maroon-500"
-            >
-              {layout.name}
-            </TabsTrigger>
-          ))}
-        </TabsList>
+      <div className="grid min-w-0 gap-3">
+        <div className="min-w-0 space-y-1.5">
+          <span className="font-display text-sm text-maroon-500">Layout</span>
+          <TabsList aria-label="Layout options" className="flex h-auto w-full flex-nowrap justify-stretch gap-1">
+            {layouts.map((layout) => (
+              <TabsTrigger
+                key={layout.id}
+                value={layout.id}
+                aria-label={layout.name}
+                className="min-w-0 flex-1 whitespace-nowrap px-2 text-xs sm:text-sm data-[state=active]:text-maroon-500"
+              >
+                {layout.id === "vastu-first" ? "Vastu-first" : layout.id === "energy-first" ? "Energy-first" : "Balanced"}
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </div>
 
-        <div className="space-y-2 rounded-lg border border-gold-500/30 bg-sand-50/80 px-4 py-3">
+        <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1.4fr)_minmax(12rem,1fr)] lg:items-stretch">
+        <div className="min-w-0 space-y-2 rounded-lg border border-gold-500/30 bg-sand-50/80 px-4 py-3">
           <div className="flex flex-wrap items-center gap-2">
             <SlidersHorizontal className="h-4 w-4 text-gold-600" aria-hidden />
             <span className="font-display text-sm text-maroon-500">Zone strictness</span>
@@ -243,7 +248,7 @@ export function DesignStep() {
           <p className="text-sm text-muted-foreground">{STRICTNESS_HINTS[strictness]}</p>
         </div>
 
-        <div className="space-y-1">
+        <div className="min-w-0 space-y-1">
           <button
             type="button"
             disabled={!current || !structural || !layoutScore}
@@ -255,6 +260,7 @@ export function DesignStep() {
             Export DXF
           </button>
           <p className="text-center text-sm text-muted-foreground">Opens in AutoCAD, LibreCAD, DraftSight</p>
+        </div>
         </div>
       </div>
 
