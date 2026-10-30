@@ -37,7 +37,7 @@ export function SeasonSwitch({
           aria-pressed={value === season}
           onClick={() => onChange(season)}
           className={cn(
-            "px-2 py-1 text-[11px] font-medium transition-colors",
+            "px-2 py-1 text-sm font-medium transition-colors",
             value === season
               ? "bg-maroon-500 text-primary-foreground"
               : "text-muted-foreground hover:bg-gold-500/10",
@@ -83,12 +83,12 @@ export function SunPathPanel({
       )}
     >
       <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-xs font-semibold text-maroon-500">
+        <p className="text-sm font-semibold text-maroon-500">
           Sun path — {SEASON_LABEL[season]}
         </p>
         <Badge
           variant="outline"
-          className="border-gold-500/50 px-1.5 py-0 text-[10px] text-gold-600"
+          className="border-gold-500/50 px-1.5 py-0 text-sm text-gold-600"
         >
           standard solar geometry · local solar time
         </Badge>
@@ -123,7 +123,7 @@ export function SunPathPanel({
               y={y(alt)}
               textAnchor="end"
               dominantBaseline="central"
-              fontSize="8"
+              fontSize="14"
               fill="#8f7024"
             >
               {alt}°
@@ -145,7 +145,7 @@ export function SunPathPanel({
               x={x(hour)}
               y={top + plotH + 10}
               textAnchor="middle"
-              fontSize="8"
+              fontSize="14"
               fill="#8f7024"
             >
               {hour}:00
@@ -203,13 +203,13 @@ export function SunPathPanel({
           x={left + plotW}
           y={top + 10}
           textAnchor="end"
-          fontSize="8"
+          fontSize="14"
           fill="#5e1b26"
         >
           max {day.maxAltitudeDeg.toFixed(1)}° · δ {day.declinationDeg.toFixed(1)}°
         </text>
       </svg>
-      <div className="flex flex-wrap items-center justify-between gap-1 text-[10px] text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-1 text-sm text-muted-foreground">
         <span>
           Sunrise {sunrise === null ? "—" : `${formatHour(sunrise)}`} · Sunset{" "}
           {sunset === null ? "—" : `${formatHour(sunset)}`}

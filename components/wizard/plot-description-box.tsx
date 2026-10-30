@@ -47,20 +47,20 @@ export function PlotDescriptionBox() {
         className="w-full resize-none rounded-md border border-gold-500/40 bg-sand-50/80 px-3 py-2 text-sm text-ink shadow-sm outline-none placeholder:text-muted-foreground/70 focus-visible:ring-2 focus-visible:ring-ring"
       />
       <div className="mt-2 flex items-center justify-between gap-3">
-        <p className="text-[11px] text-muted-foreground">
+        <p className="text-sm text-muted-foreground">
           Keyword parsing only — nothing is guessed.
         </p>
         <button
           type="button"
           onClick={apply}
-          className="rounded-md border border-gold-500/60 bg-secondary px-3 py-1.5 text-xs font-semibold text-maroon-500 shadow-sm transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="rounded-md border border-gold-500/60 bg-secondary px-3 py-1.5 text-sm font-semibold text-maroon-500 shadow-sm transition-colors hover:bg-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           Fill the form
         </button>
       </div>
 
       {error && (
-        <p role="alert" className="mt-2 flex items-start gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-2 py-1.5 text-xs text-destructive">
+        <p role="alert" className="mt-2 flex items-start gap-1.5 rounded-md border border-destructive/30 bg-destructive/10 px-2 py-1.5 text-sm text-destructive">
           <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
           {error}
         </p>
@@ -71,7 +71,7 @@ export function PlotDescriptionBox() {
           {outcome.understood.length > 0 && (
             <ul className="space-y-1">
               {outcome.understood.map((item) => (
-                <li key={item} className="flex items-center gap-1.5 text-xs text-maroon-600">
+                <li key={item} className="flex items-center gap-1.5 text-sm text-maroon-600">
                   <Check className="h-3.5 w-3.5 shrink-0 text-gold-600" aria-hidden />
                   {item}
                 </li>
@@ -81,7 +81,7 @@ export function PlotDescriptionBox() {
           {outcome.missing.length > 0 && (
             <ul className="space-y-1">
               {outcome.missing.map((item) => (
-                <li key={item} className="flex items-start gap-1.5 text-xs text-terracotta-600">
+                <li key={item} className="flex items-start gap-1.5 text-sm text-terracotta-600">
                   <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
                   {item}
                 </li>
@@ -91,7 +91,7 @@ export function PlotDescriptionBox() {
           {outcome.notes.length > 0 && (
             <ul className="space-y-1">
               {outcome.notes.map((item) => (
-                <li key={item} className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                <li key={item} className="flex items-start gap-1.5 text-sm text-muted-foreground">
                   <Info className="mt-0.5 h-3.5 w-3.5 shrink-0" aria-hidden />
                   {item}
                 </li>
@@ -99,7 +99,7 @@ export function PlotDescriptionBox() {
             </ul>
           )}
           {outcome.understood.length === 0 && (
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Nothing could be understood from that description — fill the form manually.
             </p>
           )}

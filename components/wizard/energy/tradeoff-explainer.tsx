@@ -31,13 +31,13 @@ export function TradeoffExplainer({
   const conflicts = buildConflicts(vastu, energy, structural);
 
   return (
-    <Card className="border-gold-500/30 bg-sand-50/60">
+    <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-sm text-maroon-500">
+        <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-lg text-maroon-500">
           Where the three goals pull apart
           <Badge
             variant="outline"
-            className="border-gold-500/50 text-[10px] text-gold-600"
+            className="border-gold-500/50 text-sm text-gold-600"
           >
             generated from this layout&apos;s metrics
           </Badge>
@@ -45,7 +45,7 @@ export function TradeoffExplainer({
       </CardHeader>
       <CardContent className="space-y-2.5">
         {conflicts.length === 0 ? (
-          <p className="rounded-md border border-gold-500/30 bg-card/60 px-3 py-2 text-xs leading-snug text-muted-foreground">
+          <p className="rounded-md border border-gold-500/30 bg-card/60 px-3 py-2 text-sm leading-snug text-muted-foreground">
             No hard conflict surfaced at this resolution. Vastu placements,
             energy metrics and the preliminary structural checks do not pull in
             opposite directions for this layout — but the scores are still
@@ -64,17 +64,17 @@ export function TradeoffExplainer({
               )}
             >
               <div className="mb-1 flex flex-wrap items-center gap-2">
-                <span className="text-xs font-semibold text-ink">
+                <span className="text-sm font-semibold text-ink">
                   {conflict.title}
                 </span>
                 <Badge
                   variant="outline"
-                  className="border-gold-500/50 px-1.5 py-0 text-[9px] text-gold-600"
+                  className="border-gold-500/50 px-1.5 py-0 text-sm text-gold-600"
                 >
                   {conflict.kind}
                 </Badge>
               </div>
-              <dl className="space-y-1 text-[11px] leading-snug">
+              <dl className="space-y-1 text-sm leading-snug">
                 <div className="flex gap-1.5">
                   <dt className="w-16 shrink-0 font-medium text-maroon-500">
                     Vastu
@@ -91,7 +91,7 @@ export function TradeoffExplainer({
                 )}
                 {conflict.structural && (
                   <div className="flex gap-1.5">
-                    <dt className="w-16 shrink-0 font-medium text-[#2f7d78]">
+                    <dt className="w-16 shrink-0 font-medium text-[#236760]">
                       Structure
                     </dt>
                     <dd className="text-muted-foreground">
@@ -109,7 +109,7 @@ export function TradeoffExplainer({
             </div>
           ))
         )}
-        <p className="text-[10px] leading-snug text-muted-foreground">
+        <p className="text-sm leading-snug text-muted-foreground">
           Trade-offs are rule-generated from the actual metrics above. They are
           prompts for a conversation with the household, not design rulings.
         </p>

@@ -7,7 +7,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { InputsStep } from "./wizard/inputs-step";
 import { RulesStep } from "./wizard/rules-step";
@@ -51,56 +51,58 @@ export default function WizardShell() {
 
   // Opaque cream card: must stay opaque over the fixed photo backdrop.
   return (
-    <Card className="mx-auto w-full max-w-5xl border-gold-500/30 shadow-lg shadow-maroon-500/5">
+    <Card className="mx-auto w-full max-w-5xl">
       <CardHeader className="pb-0">
-        <CardTitle className="justify-center flex items-center gap-4 pb-4">
-          {STEPS.map((stepDef, i) => (
-            <div key={stepDef.id} className="flex items-center gap-4">
-              {i > 0 && <span aria-hidden className="h-px w-6 bg-gold-500/50 md:w-12" />}
-              <button
-                type="button"
-                onClick={() => goToStep(stepDef.id)}
-                className={cn(
-                  "group flex flex-col items-center gap-1.5 outline-none",
-                  "focus-visible:ring-ring rounded-sm focus-visible:ring-2"
-                )}
-                aria-current={step === stepDef.id ? "step" : undefined}
-              >
-                <span
+        <nav aria-label="Wizard steps">
+          <ol className="grid w-full grid-cols-4 gap-1 pb-4 sm:gap-2">
+            {STEPS.map((stepDef) => (
+              <li key={stepDef.id} className="min-w-0">
+                <button
+                  type="button"
+                  onClick={() => goToStep(stepDef.id)}
+                  aria-label={`${stepDef.label}: ${stepDef.hint}`}
                   className={cn(
-                    "flex h-10 w-10 rotate-45 items-center justify-center border transition-colors",
-                    step === stepDef.id
-                      ? "border-gold-600 bg-maroon-500 shadow-md shadow-maroon-500/30"
-                      : stepDef.id < step
-                        ? "border-gold-500 bg-secondary"
-                        : "border-gold-500/50 bg-transparent"
+                    "group flex w-full min-w-0 flex-col items-center gap-2 rounded-md px-1 py-1 text-center outline-none",
+                    "focus-visible:ring-2 focus-visible:ring-ring",
                   )}
+                  aria-current={step === stepDef.id ? "step" : undefined}
                 >
                   <span
                     className={cn(
-                      "-rotate-45 font-display text-sm",
+                      "flex h-10 w-10 rotate-45 items-center justify-center border transition-colors",
                       step === stepDef.id
-                        ? "text-primary-foreground"
+                        ? "border-gold-600 bg-maroon-500 shadow-sm"
                         : stepDef.id < step
-                          ? "text-maroon-600"
-                          : "text-gold-600"
+                          ? "border-gold-500 bg-secondary"
+                          : "border-gold-500/50 bg-transparent",
                     )}
                   >
-                    {stepDef.id + 1}
+                    <span
+                      className={cn(
+                        "-rotate-45 font-display text-sm",
+                        step === stepDef.id
+                          ? "text-primary-foreground"
+                          : stepDef.id < step
+                            ? "text-maroon-600"
+                            : "text-gold-600",
+                      )}
+                    >
+                      {stepDef.id + 1}
+                    </span>
                   </span>
-                </span>
-                <span
-                  className={cn(
-                    "text-xs font-semibold uppercase tracking-widest",
-                    step === stepDef.id ? "text-maroon-500" : "text-muted-foreground"
-                  )}
-                >
-                  {stepDef.label}
-                </span>
-              </button>
-            </div>
-          ))}
-        </CardTitle>
+                  <span
+                    className={cn(
+                      "max-w-full break-words text-sm font-semibold uppercase leading-tight tracking-wide",
+                      step === stepDef.id ? "text-maroon-500" : "text-muted-foreground",
+                    )}
+                  >
+                    {stepDef.label}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        </nav>
       </CardHeader>
       <CardContent>
         {!hydrated ? (
@@ -122,7 +124,7 @@ export default function WizardShell() {
                 <ChevronLeft aria-hidden />
                 Previous
               </Button>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 Step {step + 1} of {STEPS.length}
               </span>
               <Button disabled={!canGoNext} onClick={handleNext}>

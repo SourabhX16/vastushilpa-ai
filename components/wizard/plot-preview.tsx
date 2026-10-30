@@ -48,7 +48,7 @@ export function PlotPreview({ input }: { input: PlotInput }) {
   const rectH = width * scale;
   const x = (VB_W - rectW) / 2;
   const y = (VB_H - rectH) / 2;
-  const band = 9;
+  const band = 14;
 
   const edges = ROAD_EDGES[input.facing];
   const bandRect = (edge: "top" | "right" | "bottom" | "left") => {
@@ -105,7 +105,7 @@ export function PlotPreview({ input }: { input: PlotInput }) {
             bandRect(edges[0]).y + bandRect(edges[0]).h / 2 + 3
           }
           textAnchor={edges[0] === "left" || edges[0] === "right" ? undefined : "middle"}
-          className="fill-[#4a141d] text-[8px] font-semibold uppercase tracking-widest"
+          className="fill-[#4a141d] text-sm font-semibold uppercase tracking-widest"
         >
           Road
         </text>
@@ -133,7 +133,7 @@ export function PlotPreview({ input }: { input: PlotInput }) {
       />
 
       <g transform={`translate(${x + rectW / 2}, ${y + rectH / 2})`}>
-        <text textAnchor="middle" className="fill-[#5e1b26] text-[11px] font-semibold" y="4">
+        <text textAnchor="middle" className="fill-[#5e1b26] text-sm font-semibold" y="4">
           {`${length} ${input.unit}`}
         </text>
       </g>
@@ -142,7 +142,7 @@ export function PlotPreview({ input }: { input: PlotInput }) {
         x={VB_W / 2}
         y={VB_H - 8}
         textAnchor="middle"
-        className="fill-[#8f7024] text-[10px] font-semibold"
+        className="fill-[#8f7024] text-sm font-semibold"
       >
         {length} × {width} {input.unit} · facing {input.facing}
       </text>
@@ -151,7 +151,7 @@ export function PlotPreview({ input }: { input: PlotInput }) {
         <circle r="13" fill="#faf6ec" stroke="#b08d3e" strokeWidth="1" />
         <path d="M 0 -9 L 3.2 2 L 0 0 L -3.2 2 Z" fill="#5e1b26" />
         <line x1="0" y1="2" x2="0" y2="8" stroke="#5e1b26" strokeWidth="1" />
-        <text textAnchor="middle" y="-10.5" className="fill-[#5e1b26] text-[7px] font-bold">
+        <text textAnchor="middle" y="-10.5" className="fill-[#5e1b26] text-sm font-bold">
           N
         </text>
       </g>

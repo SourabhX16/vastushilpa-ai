@@ -12,9 +12,9 @@ export function CityInfoCard({ cityId }: CityInfoCardProps) {
   const city = cityId ? getCityById(cityId) : undefined;
 
   return (
-    <Card className="border-gold-500/30 bg-sand-50/80">
+    <Card>
       <CardHeader className="flex-row items-start justify-between gap-2 space-y-0 pb-3">
-        <CardTitle className="flex items-center gap-2 text-sm text-maroon-500">
+        <CardTitle className="flex items-center gap-2 text-lg text-maroon-500">
           <MapPin className="h-4 w-4 text-gold-600" aria-hidden />
           {city ? `${city.name} — site context` : "Site context"}
         </CardTitle>
@@ -42,7 +42,7 @@ export function CityInfoCard({ cityId }: CityInfoCardProps) {
               <Detail label="Prevailing wind" value={city.prevailingWind} />
             </dl>
             {city.notes && (
-              <p className="border-t border-gold-500/20 pt-2 text-xs italic text-muted-foreground">
+              <p className="border-t border-gold-500/20 pt-2 text-sm italic text-muted-foreground">
                 Note: {city.notes}
               </p>
             )}
@@ -56,7 +56,7 @@ export function CityInfoCard({ cityId }: CityInfoCardProps) {
 function Detail({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-baseline justify-between gap-2 border-b border-gold-500/10 pb-1 sm:block sm:border-b-0">
-      <dt className="text-xs uppercase tracking-wide text-muted-foreground">{label}</dt>
+      <dt className="text-sm uppercase tracking-wide text-muted-foreground">{label}</dt>
       <dd className="font-medium capitalize text-ink sm:text-sm">{value}</dd>
     </div>
   );

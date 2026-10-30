@@ -16,9 +16,9 @@ const BAR_COLOR: Record<string, string> = {
 
 export function EnergyScoreCard({ result }: { result: EnergyResult }) {
   return (
-    <Card className="border-gold-500/30 bg-sand-50/80">
+    <Card>
       <CardHeader className="pb-2">
-        <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-sm text-maroon-500">
+        <CardTitle className="flex flex-wrap items-center justify-between gap-2 text-lg text-maroon-500">
           Energy score — {result.layoutName}
           <EstimatedBadge />
         </CardTitle>
@@ -31,13 +31,13 @@ export function EnergyScoreCard({ result }: { result: EnergyResult }) {
           >
             {result.score100}
           </span>
-          <span className="pb-1 text-xs text-muted-foreground">of 100</span>
+          <span className="pb-1 text-sm text-muted-foreground">of 100</span>
           <div className="ml-auto pb-1 text-right">
             <p className="text-sm font-semibold text-ink">
               Estimated cooling{" "}
               {Math.round(result.cooling.annualCoolingKWh).toLocaleString("en-IN")} kWh/yr
             </p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {result.cooling.kWhPerSqft} kWh/ft²/yr ·{" "}
               {result.coolingReductionPctVsBaseline >= 0 ? "−" : "+"}
               {Math.abs(result.coolingReductionPctVsBaseline).toFixed(1)}% vs model baseline
@@ -62,9 +62,9 @@ export function EnergyScoreCard({ result }: { result: EnergyResult }) {
         <div className="space-y-2.5">
           {result.breakdown.map((item) => (
             <div key={item.key} className="space-y-1">
-              <div className="flex flex-wrap items-baseline justify-between gap-x-2 text-xs">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-2 text-sm">
                 <span className="font-medium text-ink">{item.label}</span>
-                <span className="font-mono text-[11px] text-muted-foreground">
+                <span className="font-mono text-sm text-muted-foreground">
                   {item.value}/100 · weight {Math.round(item.weight * 100)}% · {item.points} pts
                 </span>
               </div>
@@ -81,14 +81,14 @@ export function EnergyScoreCard({ result }: { result: EnergyResult }) {
                   style={{ width: `${clamp(item.value, 0, 100)}%` }}
                 />
               </div>
-              <p className="text-[10px] leading-snug text-muted-foreground">
+              <p className="text-sm leading-snug text-muted-foreground">
                 {item.reason}
               </p>
             </div>
           ))}
         </div>
 
-        <div className="grid gap-2 text-xs sm:grid-cols-2">
+        <div className="grid gap-2 text-sm sm:grid-cols-2">
           <Stat label="Estimated daylight index" value={`${result.daylightScore}/100`} />
           <Stat label="Estimated ventilation index" value={`${result.ventilationScore}/100`} />
           <Stat
@@ -105,13 +105,13 @@ export function EnergyScoreCard({ result }: { result: EnergyResult }) {
           <div className="flex flex-wrap items-center gap-2">
             <Badge
               variant="outline"
-              className="border-gold-500/60 px-1.5 py-0 text-[10px] text-gold-700"
+              className="border-gold-500/60 px-1.5 py-0 text-sm text-gold-700"
             >
               {result.climate.label} climate · {result.city.name}
             </Badge>
             <Badge
               variant="outline"
-              className="border-terracotta-500/50 px-1.5 py-0 text-[10px] text-terracotta-600"
+              className="border-terracotta-500/50 px-1.5 py-0 text-sm text-terracotta-600"
             >
               not a simulation
             </Badge>
@@ -120,7 +120,7 @@ export function EnergyScoreCard({ result }: { result: EnergyResult }) {
 
         <AssumptionsPanel assumptions={result.assumptions} />
 
-        <p className="text-[11px] leading-snug text-muted-foreground">
+        <p className="text-sm leading-snug text-muted-foreground">
           This is a simplified estimate from the sun path, window areas and
           placeholder climate coefficients. It is not an energy simulation and
           must not be presented as certified performance.
@@ -133,10 +133,10 @@ export function EnergyScoreCard({ result }: { result: EnergyResult }) {
 function Stat({ label, value }: { label: string; value: string }) {
   return (
     <div className="rounded-md border border-gold-500/25 bg-card/60 px-2.5 py-1.5">
-      <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+      <p className="text-sm uppercase tracking-wide text-muted-foreground">
         {label}
       </p>
-      <p className="font-mono text-[12px] text-ink">{value}</p>
+      <p className="font-mono text-sm text-ink">{value}</p>
     </div>
   );
 }

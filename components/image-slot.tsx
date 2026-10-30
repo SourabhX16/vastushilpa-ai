@@ -79,14 +79,14 @@ export default function ImageSlot({
         frame && (
           <>
             <span
-              className="absolute right-2 top-2 rounded border border-gold-500/30 bg-sand-50/80 px-1.5 py-0.5 font-mono text-[9px] uppercase tracking-wider text-gold-600/80"
+              className="absolute right-2 top-2 rounded border border-gold-500/30 bg-sand-50/80 px-1.5 py-0.5 font-mono text-sm uppercase tracking-wider text-gold-600"
               aria-hidden
             >
               {caption ?? `${name} · image slot`}
             </span>
             <span
               aria-hidden
-              className="absolute right-2 bottom-2 text-[9px] uppercase tracking-[0.2em] text-gold-600/50"
+              className="absolute right-2 bottom-2 text-sm uppercase tracking-[0.2em] text-gold-600"
             >
               /public/bg/{name}.webp
             </span>

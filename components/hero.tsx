@@ -25,7 +25,7 @@ import ImageSlot from "@/components/image-slot";
 
 export default function Hero() {
   return (
-    <section className="relative h-[340px] w-full overflow-hidden md:h-[440px] lg:h-[560px]">
+    <section className="relative h-[240px] w-full overflow-hidden md:h-[300px] lg:h-[340px]">
       <div aria-hidden className="absolute inset-0">
         <ImageSlot
           name="body-hero"
@@ -37,8 +37,8 @@ export default function Hero() {
         />
         <div className="hero-scrim absolute inset-0" />
       </div>
-      <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col items-start px-4 pt-16 md:px-8">
-        <p className="rounded-sm border border-gold-500/40 bg-background px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.3em] text-maroon-600 md:text-xs">
+      <div className="relative z-10 mx-auto flex h-full w-full max-w-6xl flex-col items-start px-4 pt-10 md:px-8 md:pt-12">
+        <p className="max-w-full rounded-sm border border-gold-500/40 bg-background px-2 py-1 text-sm font-semibold uppercase tracking-[0.16em] text-maroon-600">
           Rule-based plan synthesis
         </p>
         <h2 className="font-display mt-4 max-w-xl text-pretty text-2xl leading-tight text-maroon-500 md:text-4xl">
@@ -46,7 +46,7 @@ export default function Hero() {
           <span className="text-maroon-600">One plan.</span>
         </h2>
         <KiteDivider className="mt-4 h-2 w-24" />
-        <p className="mt-3 max-w-md text-[11px] leading-relaxed text-ink md:text-sm">
+        <p className="mt-3 max-w-md text-sm leading-relaxed text-ink">
           Vastu grid · Ayadi harmony · solar alignment · IS 456 checks ·
           daylight and ventilation scoring
         </p>

@@ -44,9 +44,22 @@
     filter: sepia(0.55) saturate(0.45) brightness(1.02);
     opacity: 0.08;
   }
+
+  .text-gold-600 {
+    color: #76591a;
+  }
+
+  .dark .text-gold-600 {
+    color: #d4b36a;
+  }
 }
 
 @layer base {
+  html,
+  body {
+    max-width: 100%;
+  }
+
   :root {
     --background: 39 45% 91%;
     --foreground: 36 13% 15%;
@@ -66,13 +79,13 @@
     --destructive-foreground: 40 45% 92%;
     --border: 39 38% 75%;
     --input: 39 38% 72%;
-    --ring: 42 42% 47%;
+    --ring: 42 60% 30%;
     --chart-1: 42 42% 47%;
     --chart-2: 20 54% 50%;
     --chart-3: 10 55% 24%;
     --chart-4: 36 13% 15%;
     --chart-5: 38 41% 83%;
-    --radius: 0.3rem;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -94,7 +107,7 @@
     --destructive-foreground: 40 45% 92%;
     --border: 36 12% 25%;
     --input: 36 12% 25%;
-    --ring: 42 42% 47%;
+    --ring: 42 65% 66%;
     --chart-1: 42 42% 47%;
     --chart-2: 20 54% 50%;
     --chart-3: 40 45% 92%;
@@ -109,6 +122,9 @@
   }
   body {
     @apply bg-background text-foreground;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-x: clip;
   }
 }
 /* A3 heritage drawing sheets */

@@ -74,7 +74,7 @@ export function RulesStep() {
             <p className="font-display text-lg text-maroon-500">
               {result.overallAuspicious ? "Overall verdict: Auspicious" : "Overall verdict: Not auspicious"}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {result.steps.length} working steps · {result.unverifiedCount} depend on unverified formulas
             </p>
           </div>
@@ -86,9 +86,9 @@ export function RulesStep() {
       </div>
 
       {/* ------------------------- worked steps ------------------------- */}
-      <Card className="border-gold-500/30 bg-sand-50/80">
+      <Card>
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm text-maroon-500">Calculation working</CardTitle>
+          <CardTitle className="text-lg text-maroon-500">Calculation working</CardTitle>
         </CardHeader>
         <CardContent>
           <ol className="relative ml-2 space-y-5 border-l border-gold-500/40 pl-6">
@@ -97,7 +97,7 @@ export function RulesStep() {
                 <span
                   aria-hidden
                   className={cn(
-                    "absolute -left-[31px] flex h-5 w-5 items-center justify-center rounded-full border text-[10px]",
+                    "absolute -left-[31px] flex h-5 w-5 items-center justify-center rounded-full border text-sm",
                     step.auspicious === true
                       ? "border-gold-600 bg-gold-500/20 text-maroon-500"
                       : step.auspicious === false
@@ -118,7 +118,7 @@ export function RulesStep() {
                           : "Fail"
                     }
                     className={cn(
-                      "px-1.5 py-0 text-[10px]",
+                      "px-1.5 py-0 text-sm",
                       step.auspicious === true && "border-transparent bg-emerald-700/90 text-white",
                       step.auspicious === false && "border-transparent bg-terracotta-600 text-white",
                       step.auspicious === null && "border-transparent bg-secondary text-muted-foreground",
@@ -128,11 +128,11 @@ export function RulesStep() {
                   </Badge>
                   {step.unverified && <UnverifiedBadge />}
                 </div>
-                <p className="mt-1 text-xs italic text-muted-foreground">{step.formulaText}</p>
-                <p className="mt-1 rounded bg-card/80 px-2 py-1 font-mono text-[11px] leading-relaxed text-ink/90 shadow-sm">
+                <p className="mt-1 text-sm italic text-muted-foreground">{step.formulaText}</p>
+                <p className="mt-1 rounded bg-card/80 px-2 py-1 font-mono text-sm leading-relaxed text-ink/90 shadow-sm">
                   {step.calculation}
                 </p>
-                <p className="mt-1 text-xs font-medium text-maroon-600">= {step.result}</p>
+                <p className="mt-1 text-sm font-medium text-maroon-600">= {step.result}</p>
               </li>
             ))}
           </ol>
@@ -141,7 +141,7 @@ export function RulesStep() {
 
       {/* --------------------- suggestions when failing --------------------- */}
       {result.overallAuspicious ? (
-        <div className="flex items-center gap-2 rounded-lg border border-gold-500/40 bg-gold-500/5 px-3 py-2 text-xs text-maroon-600">
+        <div className="flex items-center gap-2 rounded-lg border border-gold-500/40 bg-gold-500/5 px-3 py-2 text-sm text-maroon-600">
           <CheckCircle2 className="h-4 w-4 shrink-0 text-gold-600" aria-hidden />
           The current {input.length} × {input.width} {input.unit} plot passes every evaluated Ayadi check — no changes needed.
         </div>
@@ -212,7 +212,7 @@ function SuggestionsPanel({
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
         <div>
           <h3 className="font-display text-lg text-maroon-500">Nearest auspicious dimensions</h3>
-          <p className="text-xs text-muted-foreground">
+          <p className="text-sm text-muted-foreground">
             Searched ±3 ft in 0.5 ft steps around {input.length} × {input.width} {input.unit}.
           </p>
         </div>
@@ -235,7 +235,7 @@ function SuggestionsPanel({
               <p className="font-display text-lg text-maroon-500">
                 {s.length} × {s.width} {s.unit}
               </p>
-              <p className="font-mono text-[11px] text-terracotta-600">
+              <p className="font-mono text-sm text-terracotta-600">
                 {fmtDelta(s.deltaLengthFt, "L")} · {fmtDelta(s.deltaWidthFt, "W")}
               </p>
               <Button

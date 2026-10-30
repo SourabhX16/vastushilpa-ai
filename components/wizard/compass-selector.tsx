@@ -41,7 +41,7 @@ export function CompassSelector({ value, onChange }: CompassSelectorProps) {
               aria-label={FACING_LABELS[pos.facing]}
               onClick={() => onChange(pos.facing)}
               className={cn(
-                "absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border text-xs transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                "absolute flex h-8 w-8 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border text-sm transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring",
                 active
                   ? "border-maroon-600 bg-maroon-500 text-primary-foreground shadow-md shadow-maroon-500/30"
                   : "border-gold-500/40 bg-card text-gold-600 hover:border-gold-600 hover:bg-secondary",
@@ -54,12 +54,12 @@ export function CompassSelector({ value, onChange }: CompassSelectorProps) {
         })}
         <span className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
           <span className="font-display text-xl text-maroon-500">{value}</span>
-          <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+          <span className="text-sm uppercase tracking-widest text-muted-foreground">
             {selected}
           </span>
         </span>
       </div>
-      <p className="text-center text-xs text-muted-foreground sm:max-w-[16ch] sm:text-left sm:text-sm">
+      <p className="text-center text-sm text-muted-foreground sm:max-w-[16ch] sm:text-left sm:text-sm">
         The side of the plot that touches the road.
       </p>
     </div>

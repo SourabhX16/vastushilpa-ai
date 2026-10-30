@@ -134,40 +134,40 @@ export function BeforeAfterCard({
   }, [current, baseline, baselineMat, currentMat]);
 
   return (
-    <Card className="border-gold-500/30 bg-sand-50/70">
+    <Card>
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <CardTitle className="text-sm text-maroon-500">
+            <CardTitle className="text-lg text-maroon-500">
               Before & After — Model baseline vs {current.layoutName}
             </CardTitle>
-            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+            <p className="mt-1 text-sm leading-snug text-muted-foreground">
               Comparison against a conventional rectangular model baseline without overhangs.
             </p>
           </div>
-          <Badge variant="outline" className="border-gold-500/50 text-[10px] text-gold-600">
+          <Badge variant="outline" className="border-gold-500/50 text-sm text-gold-600">
             comparative screening
           </Badge>
         </div>
       </CardHeader>
       <CardContent className="space-y-3">
-        <div className="overflow-x-auto rounded-md border border-gold-500/30 bg-card/60">
-          <table className="w-full text-left text-xs">
+        <div className="w-full max-w-full overflow-x-auto overscroll-x-contain rounded-md border border-gold-500/30 bg-card/60">
+          <table className="w-full min-w-[42rem] text-left text-sm">
             <thead>
-              <tr className="border-b border-gold-500/20 bg-sand-100/40 text-[11px] font-semibold text-muted-foreground">
+              <tr className="border-b border-gold-500/20 bg-sand-100/40 text-sm font-semibold text-muted-foreground">
                 <th className="py-2 pl-3 pr-2">Metric</th>
                 <th className="px-2 py-2">Baseline</th>
                 <th className="px-2 py-2">Current plan</th>
                 <th className="py-2 pl-2 pr-3 text-right">Delta</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gold-500/10 text-[11px]">
+            <tbody className="divide-y divide-gold-500/10 text-sm">
               {rows.map((row) => (
                 <tr key={row.label} className="hover:bg-gold-500/5">
                   <td className="py-2 pl-3 pr-2">
                     <span className="font-medium text-ink">{row.label}</span>
                     {row.subtext && (
-                      <span className="block text-[10px] text-muted-foreground">
+                      <span className="block text-sm text-muted-foreground">
                         {row.subtext}
                       </span>
                     )}
@@ -177,7 +177,7 @@ export function BeforeAfterCard({
                   <td className="py-2 pl-2 pr-3 text-right">
                     <span
                       className={cn(
-                        "inline-block rounded px-1.5 py-0.5 font-mono text-[10px]",
+                        "inline-block rounded px-1.5 py-0.5 font-mono text-sm",
                         row.favourable === true && "bg-emerald-500/10 font-semibold text-emerald-700",
                         row.favourable === false && "bg-terracotta-500/10 font-semibold text-terracotta-600",
                         row.favourable === null && "bg-gold-500/10 text-muted-foreground",
@@ -192,7 +192,7 @@ export function BeforeAfterCard({
           </table>
         </div>
 
-        <div className="space-y-1 text-[10px] leading-snug text-muted-foreground">
+        <div className="space-y-1 text-sm leading-snug text-muted-foreground">
           <p>
             • <strong>Model baseline:</strong> A conventional rectangular grid with identical floor area,
             unshaded glazing, and no daylight or orientation optimisation. Not a real project design.

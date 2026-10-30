@@ -17,7 +17,7 @@ export function AssumptionsPanel({
   return (
     <details
       className={cn(
-        "group rounded-md border border-gold-500/35 bg-card/70 text-xs text-muted-foreground",
+        "group rounded-md border border-gold-500/35 bg-card/70 text-sm text-muted-foreground",
         className,
       )}
     >
@@ -26,11 +26,11 @@ export function AssumptionsPanel({
           {title} ({assumptions.length})
           <Badge
             variant="outline"
-            className="border-terracotta-500/50 px-1.5 py-0 text-[10px] text-terracotta-600"
+            className="border-terracotta-500/50 px-1.5 py-0 text-sm text-terracotta-600"
           >
             {unverified} marked verified:false
           </Badge>
-          <span className="text-[10px] font-normal text-gold-600 group-open:hidden">
+          <span className="text-sm font-normal text-gold-600 group-open:hidden">
             open
           </span>
         </span>
@@ -40,13 +40,13 @@ export function AssumptionsPanel({
           <li key={assumption.id} className="space-y-0.5">
             <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
               <span className="font-semibold text-ink">{assumption.label}</span>
-              <span className="text-[11px] text-muted-foreground">
+              <span className="text-sm text-muted-foreground">
                 {assumption.value}
               </span>
               <Badge
                 variant="outline"
                 className={cn(
-                  "ml-auto px-1.5 py-0 text-[9px]",
+                  "ml-auto px-1.5 py-0 text-sm",
                   assumption.verified
                     ? "border-emerald-700/40 text-emerald-800"
                     : "border-terracotta-500/50 text-terracotta-600",
@@ -55,10 +55,10 @@ export function AssumptionsPanel({
                 {assumption.verified ? "standard formula" : "verified:false"}
               </Badge>
             </div>
-            <p className="font-mono text-[10px] leading-snug text-ink/80">
+            <p className="font-mono text-sm leading-snug text-ink/80">
               {assumption.formula}
             </p>
-            <p className="text-[10px] leading-snug">{assumption.source}</p>
+            <p className="text-sm leading-snug">{assumption.source}</p>
           </li>
         ))}
       </ul>

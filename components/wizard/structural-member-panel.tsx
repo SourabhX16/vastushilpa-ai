@@ -19,7 +19,7 @@ import { UnverifiedBadge } from "./unverified-badge";
 
 const STATUS_BADGE: Record<CheckStatus, string> = {
   pass: "bg-emerald-700/90 text-white",
-  amber: "bg-amber-600 text-white",
+  amber: "bg-amber-800 text-white",
   fail: "bg-terracotta-600 text-white",
 };
 
@@ -49,7 +49,7 @@ export function MemberPanel({
     | undefined = panel ?? beam ?? col;
   if (!member) {
     return (
-      <div className="rounded-md border border-gold-500/40 bg-card/70 p-3 text-xs text-muted-foreground">
+      <div className="rounded-md border border-gold-500/40 bg-card/70 p-3 text-sm text-muted-foreground">
         Member {memberId} not found in the structural run.
       </div>
     );
@@ -65,17 +65,17 @@ export function MemberPanel({
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="font-display text-sm text-maroon-500">{memberId}</p>
-          <p className="text-[11px] text-muted-foreground">{headline} · {type}</p>
+          <p className="text-sm text-muted-foreground">{headline} · {type}</p>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className={cn("px-1.5 py-0 text-[10px]", STATUS_BADGE[member.status])}>
+          <Badge className={cn("px-1.5 py-0 text-sm", STATUS_BADGE[member.status])}>
             {STATUS_WORD[member.status]}
           </Badge>
           {onClose && (
             <button
               type="button"
               onClick={onClose}
-              className="text-[11px] text-muted-foreground underline-offset-2 hover:underline"
+              className="text-sm text-muted-foreground underline-offset-2 hover:underline"
             >
               close
             </button>
@@ -87,19 +87,19 @@ export function MemberPanel({
         {member.checks.map((c) => (
           <li key={c.id} className="rounded border border-gold-500/25 bg-sand-50/70 px-2 py-1.5">
             <div className="flex flex-wrap items-center justify-between gap-1">
-              <span className="text-[11px] font-medium text-ink">{c.label}</span>
+              <span className="text-sm font-medium text-ink">{c.label}</span>
               <div className="flex items-center gap-1.5">
                 {!c.verified && <UnverifiedBadge label="unverified" />}
-                <Badge variant="outline" className="px-1 py-0 text-[9px] text-gold-600">
+                <Badge variant="outline" className="px-1 py-0 text-sm text-gold-600">
                   {c.clause}
                 </Badge>
               </div>
             </div>
             <div className="mt-1 flex items-center gap-2">
-              <span className="font-mono text-[10px] text-ink/80">{c.demand}</span>
-              <span className="text-[10px] text-muted-foreground">vs</span>
-              <span className="font-mono text-[10px] text-ink/80">{c.capacity}</span>
-              <span className="ml-auto font-mono text-[10px] text-muted-foreground">
+              <span className="font-mono text-sm text-ink/80">{c.demand}</span>
+              <span className="text-sm text-muted-foreground">vs</span>
+              <span className="font-mono text-sm text-ink/80">{c.capacity}</span>
+              <span className="ml-auto font-mono text-sm text-muted-foreground">
                 util {c.util.toFixed(2)}
               </span>
             </div>
@@ -114,17 +114,17 @@ export function MemberPanel({
                 style={{ width: `${Math.min(100, c.util * 100)}%` }}
               />
             </div>
-            <p className="mt-1 text-[10px] leading-snug text-muted-foreground">{c.reason}</p>
+            <p className="mt-1 text-sm leading-snug text-muted-foreground">{c.reason}</p>
           </li>
         ))}
       </ul>
 
       {fixes.length > 0 && (
         <div className="mt-2 rounded border border-gold-500/30 bg-amber-500/10 p-2">
-          <p className="text-[11px] font-medium text-maroon-500">Auto-fix applied</p>
+          <p className="text-sm font-medium text-maroon-500">Auto-fix applied</p>
           <ul className="mt-1 space-y-0.5">
             {fixes.map((f, i) => (
-              <li key={i} className="font-mono text-[10px] text-ink/80">
+              <li key={i} className="font-mono text-sm text-ink/80">
                 {f.before} → {f.after} · {f.reason}
               </li>
             ))}

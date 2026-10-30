@@ -86,7 +86,7 @@ export function InputsStep() {
         <Button
           type="button"
           size="lg"
-          className="h-10 w-full gap-2 bg-maroon-500 text-primary-foreground shadow-md shadow-maroon-500/20 hover:bg-maroon-600 sm:flex-1"
+          className="h-auto min-h-12 w-full whitespace-normal px-3 py-3 text-center leading-snug bg-maroon-500 text-primary-foreground shadow-sm hover:bg-maroon-600 sm:flex-1"
           onClick={loadSampleProject}
         >
           <Sparkles aria-hidden />
@@ -104,16 +104,16 @@ export function InputsStep() {
         </Button>
       </div>
 
-      <div className="grid gap-4 lg:grid-cols-2 xl:grid-cols-[1.05fr_0.95fr]">
+      <div className="grid min-w-0 gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)]">
         {/* ------------------------- form column ------------------------- */}
-        <div className="space-y-4">
-          <Card className="border-gold-500/30 bg-sand-50/80">
+        <div className="min-w-0 space-y-4">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-maroon-500">Plot dimensions</CardTitle>
+              <CardTitle className="text-lg text-maroon-500">Plot dimensions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <UnitToggle value={input.unit} onChange={handleUnitChange} />
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid min-w-0 grid-cols-2 gap-3">
                 <DimensionField
                   label="Plot length (east-west side)"
                   unit={input.unit}
@@ -132,9 +132,9 @@ export function InputsStep() {
             </CardContent>
           </Card>
 
-          <Card className="border-gold-500/30 bg-sand-50/80">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-maroon-500">Road-facing direction</CardTitle>
+              <CardTitle className="text-lg text-maroon-500">Road-facing direction</CardTitle>
             </CardHeader>
             <CardContent>
               <CompassSelector
@@ -144,9 +144,9 @@ export function InputsStep() {
             </CardContent>
           </Card>
 
-          <Card className="border-gold-500/30 bg-sand-50/80">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-maroon-500">City</CardTitle>
+              <CardTitle className="text-lg text-maroon-500">City</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <Select value={input.city || ""} onValueChange={(v) => patchInput({ city: v })}>
@@ -168,14 +168,14 @@ export function InputsStep() {
                 </SelectContent>
               </Select>
               {errors.city && (
-                <p role="alert" className="text-xs text-destructive">{errors.city}</p>
+                <p role="alert" className="text-sm text-destructive">{errors.city}</p>
               )}
             </CardContent>
           </Card>
 
-          <Card className="border-gold-500/30 bg-sand-50/80">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-maroon-500">Building type</CardTitle>
+              <CardTitle className="text-lg text-maroon-500">Building type</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-3 gap-2">
@@ -192,14 +192,14 @@ export function InputsStep() {
                       disabled={!type.supported}
                       onClick={() => patchInput({ buildingType: type.id })}
                       className={cn(
-                        "flex flex-col items-center justify-center gap-1 rounded-md border px-2 py-3 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                        "flex flex-col items-center justify-center gap-1 rounded-md border px-2 py-3 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
                         styles,
                         !type.supported && "cursor-not-allowed opacity-60 hover:border-gold-500/40",
                       )}
                     >
                       {type.label}
                       {!type.supported && type.note && (
-                        <span className="rounded-full border border-gold-500/60 bg-gold-500/10 px-1.5 text-[9px] font-medium uppercase tracking-wider text-gold-600">
+                        <span className="rounded-full border border-gold-500/60 bg-gold-500/10 px-1.5 text-sm font-medium uppercase tracking-wider text-gold-600">
                           {type.note}
                         </span>
                       )}
@@ -210,9 +210,9 @@ export function InputsStep() {
             </CardContent>
           </Card>
 
-          <Card className="border-gold-500/30 bg-sand-50/80">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-maroon-500">Bedrooms</CardTitle>
+              <CardTitle className="text-lg text-maroon-500">Bedrooms</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               <div role="group" aria-label="Number of bedrooms" className="flex gap-1.5">
@@ -237,14 +237,14 @@ export function InputsStep() {
                 })}
               </div>
               {errors.bedrooms && (
-                <p role="alert" className="text-xs text-destructive">{errors.bedrooms}</p>
+                <p role="alert" className="text-sm text-destructive">{errors.bedrooms}</p>
               )}
             </CardContent>
           </Card>
 
-          <Card className="border-gold-500/30 bg-sand-50/80">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-maroon-500">Features</CardTitle>
+              <CardTitle className="text-lg text-maroon-500">Features</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
               {FEATURES.map((feature) => (
@@ -263,7 +263,7 @@ export function InputsStep() {
 
           <div
             className={cn(
-              "flex items-center gap-2 rounded-lg border px-3 py-2 text-xs",
+              "flex items-center gap-2 rounded-lg border px-3 py-2 text-sm",
               valid
                 ? "border-gold-500/40 bg-gold-500/10 text-maroon-600"
                 : "border-terracotta-500/40 bg-terracotta-500/10 text-terracotta-600",
@@ -282,12 +282,12 @@ export function InputsStep() {
         </div>
 
         {/* ------------------------- side column ------------------------- */}
-        <div className="space-y-4">
+        <div className="min-w-0 space-y-4">
           <PlotDescriptionBox />
 
-          <Card className="border-gold-500/30 bg-sand-50/80">
+          <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm text-maroon-500">Live plot preview</CardTitle>
+              <CardTitle className="text-lg text-maroon-500">Live plot preview</CardTitle>
             </CardHeader>
             <CardContent>
               <PlotPreview input={input} />
@@ -327,7 +327,7 @@ function UnitToggle({
           aria-pressed={value === option.id}
           onClick={() => onChange(option.id)}
           className={cn(
-            "px-3 py-1.5 text-xs font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "px-3 py-1.5 text-sm font-semibold transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring",
             value === option.id
               ? "bg-maroon-500 text-primary-foreground"
               : "bg-card text-gold-600 hover:bg-secondary",
@@ -376,7 +376,7 @@ function DimensionField({
 
   return (
     <label className="block">
-      <span className="mb-1 block text-xs font-medium uppercase tracking-wide text-ink/70">
+      <span className="mb-1 block text-sm font-medium uppercase tracking-wide text-ink/70">
         {label}
       </span>
       <Input
@@ -394,9 +394,9 @@ function DimensionField({
         )}
       />
       {error ? (
-        <p role="alert" className="mt-1 text-xs text-destructive">{error}</p>
+        <p role="alert" className="mt-1 text-sm text-destructive">{error}</p>
       ) : (
-        <p className="mt-1 text-[11px] text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           {PLOT_LIMITS[unit].min}–{PLOT_LIMITS[unit].max} {unit}
         </p>
       )}
@@ -424,7 +424,7 @@ function ToggleRow({
       <span className="flex flex-col gap-0.5">
         <span className="text-sm font-medium text-ink">{title}</span>
         {description && (
-          <span className="text-xs text-muted-foreground">{description}</span>
+          <span className="text-sm text-muted-foreground">{description}</span>
         )}
       </span>
       <input

@@ -32,14 +32,14 @@ export function VastuGridCard({ input }: { input: PlotInput }) {
   }, [input]);
 
   return (
-    <Card className="border-gold-500/30 bg-sand-50/80">
+    <Card>
       <CardHeader className="flex-row items-start justify-between gap-2 pb-3">
         <div>
-          <CardTitle className="flex items-center gap-2 text-sm text-maroon-500">
+          <CardTitle className="flex items-center gap-2 text-lg text-maroon-500">
             <Compass className="h-4 w-4 text-gold-600" aria-hidden />
             Vastu grid — zones and deities
           </CardTitle>
-          <p className="mt-1 text-xs text-muted-foreground">
+          <p className="mt-1 text-sm text-muted-foreground">
             The plot split into the nine mandala zones, drawn north-up.
             The central Brahmasthan stays free of masonry in every layout.
           </p>
@@ -96,7 +96,7 @@ export function VastuGridCard({ input }: { input: PlotInput }) {
               >
                 {showPadas ? "Hide" : "Show"} 9×9 pada mandala
               </Button>
-              <p className="text-[11px] text-muted-foreground">
+              <p className="text-sm text-muted-foreground">
                 {showPadas
                   ? "81 padas = the finer mandala a traditional vastu consultant works with."
                   : "3×3 zones = the working grid the layout engine follows."}

@@ -35,21 +35,21 @@ export function StructuralReport({
       <div className="rounded-lg border border-gold-500/30 bg-card/60 p-4">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-display text-base text-maroon-500">Structural preview — IS 456:2000</h3>
-          <Badge className="bg-ink/85 px-1.5 py-0 text-[10px] text-sand-50">
+          <Badge className="bg-ink/85 px-1.5 py-0 text-sm text-sand-50">
             {s.summary.pass} pass · {s.summary.amber} amber · {s.summary.fail} fail (of {s.summary.total} checks)
           </Badge>
           {s.initialSummary && s.summary.fail === 0 && (
-            <Badge variant="outline" className="px-1.5 py-0 text-[10px] text-gold-600">
+            <Badge variant="outline" className="px-1.5 py-0 text-sm text-gold-600">
               autofixed from {s.initialSummary.fail} failing
             </Badge>
           )}
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">
+        <p className="mt-1 text-sm text-muted-foreground">
           {panelCount} slab panels · {beamCount} beams · {colCount} columns ·{" "}
           {s.foundation.footings.length} footing estimates · {s.plan.levels === 2 ? "two structural levels (notional first floor note)" : "single level"}
         </p>
         {s.summary.fail === 0 && s.summary.amber > 0 && (
-          <p className="mt-1 text-xs text-amber-700">
+          <p className="mt-1 text-sm text-amber-700">
             Everything auto-fixed to code within engine limits; {s.summary.amber} items stay amber — they need engineering judgement (bi-axial column design), not size changes.
           </p>
         )}
@@ -61,7 +61,7 @@ export function StructuralReport({
       {/* autofix log */}
       {s.autoFixLog.length > 0 && (
         <div className="rounded-lg border border-gold-500/30 bg-card/60 p-4">
-          <h4 className="font-display text-sm text-maroon-500">Auto-fix ladder ({s.autoFixLog.length} steps)</h4>
+          <h4 className="font-display text-base text-maroon-500">Auto-fix ladder ({s.autoFixLog.length} steps)</h4>
           <div className="mt-2 max-h-64 overflow-y-auto pr-1">
             <Table>
               <TableHeader>
@@ -75,10 +75,10 @@ export function StructuralReport({
               <TableBody>
                 {s.autoFixLog.map((f, i) => (
                   <TableRow key={`${f.member}-${i}`}>
-                    <TableCell className="py-1.5 font-mono text-[11px]">{f.member}</TableCell>
-                    <TableCell className="py-1.5 font-mono text-[11px] text-ink/80">{f.before}</TableCell>
-                    <TableCell className="py-1.5 font-mono text-[11px] text-emerald-800">{f.after}</TableCell>
-                    <TableCell className="py-1.5 text-[11px] text-muted-foreground">{f.reason}</TableCell>
+                    <TableCell className="py-1.5 font-mono text-sm">{f.member}</TableCell>
+                    <TableCell className="py-1.5 font-mono text-sm text-ink/80">{f.before}</TableCell>
+                    <TableCell className="py-1.5 font-mono text-sm text-emerald-800">{f.after}</TableCell>
+                    <TableCell className="py-1.5 text-sm text-muted-foreground">{f.reason}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
@@ -90,22 +90,22 @@ export function StructuralReport({
       {/* load path + forced spans */}
       <div className="grid gap-3 lg:grid-cols-2">
         <div className="rounded-lg border border-gold-500/30 bg-card/60 p-4">
-          <h4 className="font-display text-sm text-maroon-500">Load path</h4>
-          <p className="mt-1 text-xs text-muted-foreground">{s.loadPathNote}</p>
-          <p className="mt-2 text-xs text-ink/85">
+          <h4 className="font-display text-base text-maroon-500">Load path</h4>
+          <p className="mt-1 text-sm text-muted-foreground">{s.loadPathNote}</p>
+          <p className="mt-2 text-sm text-ink/85">
             Example: {s.loadPath[0]?.columnId} ← {s.loadPath[0]?.beams.length} beam end shears
             from {s.loadPath[0]?.slabs.length} surrounding slabs → footing {s.loadPath[0]?.footing}.
           </p>
         </div>
         {s.forcedSpans.length > 0 && (
           <div className="rounded-lg border border-gold-500/30 bg-card/60 p-4">
-            <h4 className="font-display text-sm text-maroon-500">Forced spans (Brahmasthan)</h4>
-            <ul className="mt-1 space-y-1 text-xs text-muted-foreground">
+            <h4 className="font-display text-base text-maroon-500">Forced spans (Brahmasthan)</h4>
+            <ul className="mt-1 space-y-1 text-sm text-muted-foreground">
               {s.forcedSpans.map((sp, i) => (
                 <li key={i}>
                   {sp.note}
                   {sp.exceeds45m && (
-                    <Badge className="ml-1 bg-terracotta-600 px-1 py-0 text-[9px] text-white">
+                    <Badge className="ml-1 bg-terracotta-600 px-1 py-0 text-sm text-white">
                       &gt; 4.5 m — engineer review
                     </Badge>
                   )}
@@ -119,7 +119,7 @@ export function StructuralReport({
       {/* foundation */}
       <div className="rounded-lg border border-gold-500/30 bg-card/60 p-4">
         <div className="flex items-center justify-between">
-          <h4 className="font-display text-sm text-maroon-500">Foundation estimates</h4>
+          <h4 className="font-display text-base text-maroon-500">Foundation estimates</h4>
           <UnverifiedBadge label={`SBC ${s.foundation.sbcKPa} kPa assumed`} tooltip={`${UNVERIFIED_TOOLTIP} Bearing 150 kN/m² is an assumed value; footings follow service load / SBC; punching/one-way shear NOT checked.`} />
         </div>
         <div className="mt-2 max-h-60 overflow-y-auto pr-1">
@@ -136,39 +136,39 @@ export function StructuralReport({
             <TableBody>
               {s.foundation.footings.map((f) => (
                 <TableRow key={f.id}>
-                  <TableCell className="py-1.5 font-mono text-[11px]">{f.id}</TableCell>
-                  <TableCell className="py-1.5 font-mono text-[11px]">{f.columnId}</TableCell>
-                  <TableCell className="py-1.5 text-[11px]">{f.sizeM.toFixed(1)} × {f.sizeM.toFixed(1)} m</TableCell>
-                  <TableCell className="py-1.5 text-right font-mono text-[11px]">{(f.bearing * f.areaM2).toFixed(0)} kN</TableCell>
-                  <TableCell className="py-1.5 text-right font-mono text-[11px]">{f.bearing.toFixed(0)} kN/m²</TableCell>
+                  <TableCell className="py-1.5 font-mono text-sm">{f.id}</TableCell>
+                  <TableCell className="py-1.5 font-mono text-sm">{f.columnId}</TableCell>
+                  <TableCell className="py-1.5 text-sm">{f.sizeM.toFixed(1)} × {f.sizeM.toFixed(1)} m</TableCell>
+                  <TableCell className="py-1.5 text-right font-mono text-sm">{(f.bearing * f.areaM2).toFixed(0)} kN</TableCell>
+                  <TableCell className="py-1.5 text-right font-mono text-sm">{f.bearing.toFixed(0)} kN/m²</TableCell>
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </div>
-        <p className="mt-2 text-[11px] text-muted-foreground">{s.foundation.note}</p>
+        <p className="mt-2 text-sm text-muted-foreground">{s.foundation.note}</p>
       </div>
 
       {/* seismic */}
       <div className="rounded-lg border border-gold-500/30 bg-card/60 p-4">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <h4 className="font-display text-sm text-maroon-500">Seismic advisory · {s.seismic.label}</h4>
+          <h4 className="font-display text-base text-maroon-500">Seismic advisory · {s.seismic.label}</h4>
           <UnverifiedBadge label="city seismic data unverified" tooltip={`${UNVERIFIED_TOOLTIP} Zone mapping comes from cities.ts (verified: false).`} />
         </div>
-        <p className="mt-1 text-xs text-muted-foreground">{s.seismic.note}</p>
+        <p className="mt-1 text-sm text-muted-foreground">{s.seismic.note}</p>
       </div>
 
       {/* assumptions */}
       <div className="rounded-lg border border-dashed border-gold-500/40 bg-card/50 p-4">
-        <h4 className="font-display text-sm text-maroon-500">Assumption ledger</h4>
-        <ul className="mt-2 grid gap-2 text-xs sm:grid-cols-2">
+        <h4 className="font-display text-base text-maroon-500">Assumption ledger</h4>
+        <ul className="mt-2 grid gap-2 text-sm sm:grid-cols-2">
           {s.assumptions.map((a) => (
             <li key={a.id} className="rounded border border-gold-500/25 bg-sand-50/60 px-2.5 py-2">
               <div className="flex items-center justify-between gap-2">
                 <span className="font-medium text-ink">{a.label}</span>
                 {!a.verified && <UnverifiedBadge label="needs check" />}
               </div>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">
+              <p className="mt-0.5 text-sm text-muted-foreground">
                 {a.value} — {a.source}
               </p>
             </li>
@@ -177,7 +177,7 @@ export function StructuralReport({
       </div>
 
       {/* disclaimer */}
-      <p className="rounded-md border border-terracotta-500/40 bg-terracotta-500/5 px-3 py-2 text-xs font-medium text-maroon-600">
+      <p className="rounded-md border border-terracotta-500/40 bg-terracotta-500/5 px-3 py-2 text-sm font-medium text-maroon-600">
         {DISCLAIMER}
       </p>
     </div>
@@ -209,7 +209,7 @@ function ChecksGroup({
   if (members.length === 0) return null;
   return (
     <div className="rounded-lg border border-gold-500/30 bg-card/60 p-4">
-      <h4 className="font-display text-sm text-maroon-500">{title}</h4>
+      <h4 className="font-display text-base text-maroon-500">{title}</h4>
       <div className="mt-2 max-h-72 overflow-y-auto pr-1">
         <Table>
           <TableHeader>
@@ -225,16 +225,16 @@ function ChecksGroup({
             {members.map((m) => (
               <TableRow key={m.id} className="align-top">
                 <TableCell className="py-1.5">
-                  <p className="font-mono text-[11px] text-ink">{m.id}</p>
-                  <p className="text-[10px] text-muted-foreground">{m.size}</p>
-                  <Badge className={cn("mt-1 px-1 py-0 text-[9px]", m.status === "pass" && "bg-emerald-700 text-white", m.status === "amber" && "bg-amber-600 text-white", m.status === "fail" && "bg-terracotta-600 text-white")}>
+                  <p className="font-mono text-sm text-ink">{m.id}</p>
+                  <p className="text-sm text-muted-foreground">{m.size}</p>
+                  <Badge className={cn("mt-1 px-1 py-0 text-sm", m.status === "pass" && "bg-emerald-700 text-white", m.status === "amber" && "bg-amber-800 text-white", m.status === "fail" && "bg-terracotta-600 text-white")}>
                     {m.status}
                   </Badge>
                 </TableCell>
                 <TableCell className="py-1.5">
                   <ul className="space-y-1">
                     {m.checks.map((c) => (
-                      <li key={c.id} className="text-[11px] text-ink/90">
+                      <li key={c.id} className="text-sm text-ink/90">
                         {c.label}
                         {!c.verified && <UnverifiedBadge label="*" />}
                       </li>
@@ -242,14 +242,14 @@ function ChecksGroup({
                   </ul>
                 </TableCell>
                 <TableCell className="py-1.5">
-                  <ul className="space-y-1 font-mono text-[10px] text-ink/80">
+                  <ul className="space-y-1 font-mono text-sm text-ink/80">
                     {m.checks.map((c) => (
                       <li key={c.id}>{c.demand} ⇄ {c.capacity}</li>
                     ))}
                   </ul>
                 </TableCell>
                 <TableCell className="py-1.5">
-                  <ul className="space-y-1 text-[10px] text-gold-600">
+                  <ul className="space-y-1 text-sm text-gold-600">
                     {m.checks.map((c) => (
                       <li key={c.id}>{c.clause}</li>
                     ))}
@@ -258,7 +258,7 @@ function ChecksGroup({
                 <TableCell className="py-1.5">
                   <ul className="space-y-1">
                     {m.checks.map((c) => (
-                      <li key={c.id} className={cn("text-right font-mono text-[10px]", c.status === "pass" && "text-emerald-800", c.status === "amber" && "text-amber-700", c.status === "fail" && "text-terracotta-700")}>
+                      <li key={c.id} className={cn("text-right font-mono text-sm", c.status === "pass" && "text-emerald-800", c.status === "amber" && "text-amber-700", c.status === "fail" && "text-terracotta-700")}>
                         {c.util.toFixed(2)}
                       </li>
                     ))}

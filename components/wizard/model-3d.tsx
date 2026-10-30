@@ -80,7 +80,7 @@ export function Model3D({
 
   return (
     <div className={cn("space-y-2", className)}>
-      <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+      <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
         <label className="flex cursor-pointer items-center gap-1.5">
           <input
             type="checkbox"
@@ -90,11 +90,11 @@ export function Model3D({
           />
           Show walls
         </label>
-        <span className="text-[11px] text-gold-600">
+        <span className="text-sm text-gold-600">
           Drag to orbit · click members to open their checks · structural
           colours light the load path for the selected column.
         </span>
-        <span className="ml-auto flex items-center gap-1.5 text-[10px]">
+        <span className="ml-auto flex items-center gap-1.5 text-sm">
           <Dot color={STATUS_COLOR.pass} /> pass
           <Dot color={STATUS_COLOR.amber} /> amber
           <Dot color={STATUS_COLOR.fail} /> fail

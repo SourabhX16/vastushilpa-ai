@@ -81,14 +81,14 @@ export function BalanceDashboard({
   const pick = top && (!second || margin >= PICK_MARGIN) ? top : null;
 
   return (
-    <Card className="border-maroon-500/25 bg-gradient-to-br from-sand-50 via-card to-sand-100/60">
+    <Card>
       <CardHeader className="pb-2">
         <div className="flex flex-wrap items-start justify-between gap-2">
           <div>
-            <CardTitle className="text-sm text-maroon-500">
+            <CardTitle className="text-lg text-maroon-500">
               Three-way balance — Vastu × Energy × Structure
             </CardTitle>
-            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+            <p className="mt-1 text-sm leading-snug text-muted-foreground">
               Weighted comparison of the three generated layouts. All three
               scores are simplified estimates; adjust the weights to reflect
               what matters most to the household.
@@ -96,7 +96,7 @@ export function BalanceDashboard({
           </div>
           <Badge
             variant="outline"
-            className="border-gold-500/50 text-[10px] text-gold-600"
+            className="border-gold-500/50 text-sm text-gold-600"
           >
             weighted comparison
           </Badge>
@@ -120,7 +120,7 @@ export function BalanceDashboard({
             onChange={(structural) => setWeights((w) => ({ ...w, structural }))}
           />
           <div className="flex items-center justify-between gap-2 sm:col-span-3">
-            <p className="text-[10px] text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Normalised over {totalWeight} total weight. Structural score =
               pass + half-credit for amber members (after autofix).
             </p>
@@ -128,7 +128,7 @@ export function BalanceDashboard({
               type="button"
               variant="ghost"
               size="sm"
-              className="h-6 px-2 text-[10px]"
+              className="h-6 px-2 text-sm"
               onClick={() => setWeights(DEFAULT_WEIGHTS)}
             >
               Reset 35 / 35 / 30
@@ -145,13 +145,13 @@ export function BalanceDashboard({
           )}
           aria-live="polite"
         >
-          <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+          <p className="text-sm uppercase tracking-wide text-muted-foreground">
             Computed pick at these weights
           </p>
           <p className="font-display text-lg leading-tight text-maroon-500">
             {pick ? pick.layout.name : "Too close to call"}
           </p>
-          <p className="text-[11px] leading-snug text-muted-foreground">
+          <p className="text-sm leading-snug text-muted-foreground">
             {pick
               ? `Leads ${second ? second.layout.name : "the field"} by ${margin} weighted point${margin === 1 ? "" : "s"} — the margin, not a fixed favourite, drives this pick.`
               : `The top layouts are within ${PICK_MARGIN} weighted points. Use the sliders or review the numbers rather than assuming one layout wins.`}
@@ -173,15 +173,15 @@ export function BalanceDashboard({
               )}
             >
               <div className="mb-1.5 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-                <span className="text-xs font-semibold text-ink">
+                <span className="text-sm font-semibold text-ink">
                   {row.layout.name}
                   {row.layout.id === "balanced" && (
-                    <span className="ml-1.5 text-[10px] font-normal text-muted-foreground">
+                    <span className="ml-1.5 text-sm font-normal text-muted-foreground">
                       balanced mode
                     </span>
                   )}
                 </span>
-                <span className="font-mono text-xs text-maroon-500">
+                <span className="font-mono text-sm text-maroon-500">
                   {row.weighted} weighted
                 </span>
               </div>
@@ -209,7 +209,7 @@ export function BalanceDashboard({
           ))}
         </div>
 
-        <p className="text-[10px] leading-snug text-muted-foreground">
+        <p className="text-sm leading-snug text-muted-foreground">
           The energy score is an estimate from the simplified energy model, not
           a simulation. The structural score summarises preliminary IS 456
           checks after autofix, with amber members earning half credit; it is
@@ -231,7 +231,7 @@ function WeightControl({
 }) {
   return (
     <div className="space-y-1.5">
-      <div className="flex items-baseline justify-between text-[11px]">
+      <div className="flex items-baseline justify-between text-sm">
         <span className="font-medium text-ink">{label}</span>
         <span className="font-mono text-muted-foreground">{value}%</span>
       </div>
@@ -259,7 +259,7 @@ function Gauge({
   suffix: string;
 }) {
   return (
-    <div className="flex items-center gap-2 text-[10px]">
+    <div className="flex items-center gap-2 text-sm">
       <span className="w-14 shrink-0 text-muted-foreground">{label}</span>
       <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-gold-500/15">
         <span
