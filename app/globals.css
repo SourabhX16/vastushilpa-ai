@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /*
+   * Hero banner scrim (components/hero.tsx). Cream gradient fading left to
+   * right and bottom into the page background colour. The alpha stops were
+   * measured against real pixels of /bg/body-hero.webp composited at
+   * 1440x800 and 1920x1080; worst-case WCAG contrast under the headline,
+   * accent span and subtitle is ≥ 4.5:1 (headline 5.51:1, span 6.49:1,
+   * subtitle 8.30:1). Adjust stops only with a re-measurement.
+   */
+  .hero-scrim {
+    background-image: linear-gradient(
+        to right,
+        hsl(39 45% 91% / 0.95) 0%,
+        hsl(39 45% 91% / 0.92) 28%,
+        hsl(39 45% 91% / 0.82) 44%,
+        hsl(39 45% 91% / 0.7) 56%,
+        hsl(39 45% 91% / 0.14) 59%,
+        hsl(39 45% 91% / 0.03) 66%,
+        hsl(39 45% 91% / 0) 100%
+      ),
+      linear-gradient(
+        to top,
+        hsl(39 45% 91% / 0.95) 0%,
+        hsl(39 45% 91% / 0.72) 20%,
+        hsl(39 45% 91% / 0.42) 34%,
+        hsl(39 45% 91% / 0) 48%
+      );
+  }
+
+  /*
+   * Fixed heritage photo backdrop (components/heritage/backdrop-image.tsx).
+   * ~8% opacity plus sepia/desaturation keeps every text surface legible.
+   * Static layer on purpose — no parallax, honours prefers-reduced-motion.
+   */
+  .backdrop-photo {
+    filter: sepia(0.55) saturate(0.45) brightness(1.02);
+    opacity: 0.08;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 39 45% 91%;
+    --foreground: 36 13% 15%;
+    --card: 40 60% 95%;
+    --card-foreground: 36 13% 15%;
+    --popover: 40 55% 96%;
+    --popover-foreground: 36 13% 15%;
+    --primary: 10 55% 24%;
+    --primary-foreground: 40 45% 92%;
+    --secondary: 38 41% 83%;
+    --secondary-foreground: 36 13% 15%;
+    --muted: 39 38% 84%;
+    --muted-foreground: 32 16% 36%;
+    --accent: 39 40% 84%;
+    --accent-foreground: 10 55% 24%;
+    --destructive: 0 72% 40%;
+    --destructive-foreground: 40 45% 92%;
+    --border: 39 38% 75%;
+    --input: 39 38% 72%;
+    --ring: 42 42% 47%;
+    --chart-1: 42 42% 47%;
+    --chart-2: 20 54% 50%;
+    --chart-3: 10 55% 24%;
+    --chart-4: 36 13% 15%;
+    --chart-5: 38 41% 83%;
+    --radius: 0.3rem;
+  }
+
+  .dark {
+    --background: 30 12% 10%;
+    --foreground: 40 45% 92%;
+    --card: 30 12% 13%;
+    --card-foreground: 40 45% 92%;
+    --popover: 30 12% 13%;
+    --popover-foreground: 40 45% 92%;
+    --primary: 42 42% 47%;
+    --primary-foreground: 36 13% 15%;
+    --secondary: 30 10% 20%;
+    --secondary-foreground: 40 45% 92%;
+    --muted: 30 10% 20%;
+    --muted-foreground: 38 18% 65%;
+    --accent: 30 10% 20%;
+    --accent-foreground: 40 45% 92%;
+    --destructive: 0 62% 45%;
+    --destructive-foreground: 40 45% 92%;
+    --border: 36 12% 25%;
+    --input: 36 12% 25%;
+    --ring: 42 42% 47%;
+    --chart-1: 42 42% 47%;
+    --chart-2: 20 54% 50%;
+    --chart-3: 40 45% 92%;
+    --chart-4: 38 41% 83%;
+    --chart-5: 32 16% 36%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
