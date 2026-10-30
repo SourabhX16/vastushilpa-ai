@@ -122,9 +122,14 @@ function rainwaterEstimate(analysis: EnergyAnalysis) {
 }
 
 /**
- * Energy score /100 plus baseline comparison, rooftop-PV and rainwater
- * screening estimates. Everything is labelled estimated in the UI; none of
- * these numbers is a certified performance claim.
+ * Add a weighted energy score and screening estimates to an energy analysis.
+ *
+ * Use this to compare a candidate analysis with a baseline. Geometry used by
+ * the engine is in feet; its plan convention is north up, with y increasing
+ * southward. Cooling, solar, and rainwater values rely on simplified or
+ * placeholder assumptions and are estimates, not simulation or certified
+ * performance results. Pass a separately computed baseline when comparison
+ * against another design is needed.
  */
 export function scoreEnergy(
   analysis: EnergyAnalysis,

@@ -101,7 +101,15 @@ function evaluateFormula(
   };
 }
 
-/** Worked Ayadi evaluation of a plot's dimensions. */
+/**
+ * Evaluate the configured Ayadi formula set for a plot.
+ *
+ * Use this when a caller needs the individual calculation steps and the
+ * prototype's overall auspicious flag. Plot dimensions may be supplied in
+ * feet or metres; conversion and hasta quantization follow the unverified
+ * conventions documented in the data/configuration. The formulas and derived
+ * rules are secondary-source implementations and remain unverified.
+ */
 export function calculateAyadi(plot: PlotInput): AyadiResult {
   const lengthFt = toFeet(plot.length, plot.unit);
   const widthFt = toFeet(plot.width, plot.unit);
@@ -176,10 +184,14 @@ export function calculateAyadi(plot: PlotInput): AyadiResult {
 /* ---------------------- suggestion search ---------------------- */
 
 /**
- * Searches +/- 3 ft in 0.5 ft steps around both plot dimensions,
- * evaluates every candidate, and returns up to 3 passing dimension
- * pairs sorted by smallest total change. The current dimensions are
- * never returned. Empty array if nothing passes.
+ * Find nearby plot dimensions that pass the configured Ayadi evaluation.
+ *
+ * Use this as an exploratory suggestion alongside {@link calculateAyadi},
+ * not as a claim that a plot size is traditionally validated. Search offsets
+ * are in feet (±3 ft in 0.5 ft steps on each dimension); returned dimensions
+ * use the input unit and include deltas in feet. The underlying formula set
+ * and auspicious mappings are unverified. At most three candidates are
+ * returned, ordered by smallest total change; the input itself is excluded.
  */
 export function suggestNearestAuspicious(plot: PlotInput): AyadiSuggestion[] {
   const lengthFt = toFeet(plot.length, plot.unit);

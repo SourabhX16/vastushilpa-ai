@@ -797,8 +797,16 @@ function buildLayoutForMode(
 }
 
 /**
- * Generates the three layouts (vastu-first, energy-first, balanced) for a
- * plot at the given strictness. Deterministic for identical inputs.
+ * Generate three deterministic candidate layouts for the supplied plot.
+ *
+ * Use this when the planner needs comparable Vastu-first, energy-first, and
+ * balanced options. Input plot dimensions can be feet or metres; generated
+ * rectangle coordinates and dimensions are in feet. The plot origin is at
+ * the north-west corner, x increases eastward, and y increases southward
+ * (north is up when displayed). Placement uses a constrained, rule-based
+ * search over Vastu zones and does not guarantee that every requested room
+ * fits on the ground floor. Configured Vastu and climate preferences are not
+ * all verified.
  */
 export function generateLayouts(
   plot: PlotInput,

@@ -22,6 +22,16 @@ const LAYERS: [string, number][] = [
   ["COLUMNS", 2], ["BEAMS", 8], ["VASTU_GRID", 8], ["DIMENSIONS", 6], ["TEXT", 7],
 ];
 
+/**
+ * Build a millimetre-based DXF drawing from a layout and its analyses.
+ *
+ * Use this when exporting the current plan for CAD review. Input plot and
+ * layout geometry use feet (plot dimensions may also be provided in metres);
+ * generator coordinates start at the north-west and y grows southward, while
+ * the exported drawing flips that axis so north is up. Structural overlays
+ * are only as reliable as the preliminary, assumption-based structural result
+ * supplied to this function.
+ */
 export function buildDxf(input: DxfExportInput): string {
   // dxf-writer uses a process-wide handle counter. Reset and restore it so
   // repeated calls are deterministic and do not alter the caller's state.

@@ -19,10 +19,14 @@ import type {
 } from "./types";
 
 /**
- * Engine entry point: uploaded plot + generated layout → the full structural
- * result (members, checks, autofix log, load path, foundation + seismic
- * notes) consumed by the design step, plan-view structure overlay, 3D model
- * and the report panel.
+ * Run preliminary structural checks for a plot and candidate layout.
+ *
+ * Use this to produce member checks and a structural overlay/report for
+ * design review. Plot and layout geometry are expressed in feet; the engine
+ * uses north-up display convention with y increasing southward. The IS 456
+ * checks, load assumptions, foundation sizing, and seismic notes are
+ * simplified and include unverified assumptions; results require review by a
+ * licensed structural engineer before any construction use.
  */
 export function runStructural(
   plot: PlotInput,

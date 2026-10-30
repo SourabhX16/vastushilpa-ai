@@ -191,7 +191,15 @@ function symmetryCheck(layout: Layout, plot: PlotInput): VastuCheck {
   };
 }
 
-/** Scores a generated layout for a plot. Deterministic. */
+/**
+ * Score a candidate layout against the configured Vastu rules.
+ *
+ * Use this after layout generation to present the per-room and plot-level
+ * checks. Layout geometry is in feet, with north up and the generator's y
+ * coordinate increasing southward. The score is a deterministic prototype
+ * rubric; its Vastu rules and point weights are encoded from secondary
+ * sources and remain marked unverified in the data.
+ */
 export function scoreVastu(layout: Layout, plot: PlotInput): VastuResult {
   const roomChecks: VastuCheck[] = [];
   const totalWeight = layout.rooms.reduce(
