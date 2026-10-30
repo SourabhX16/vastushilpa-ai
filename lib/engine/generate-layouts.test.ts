@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { generateLayouts, LAYOUT_MODES } from "./generateLayouts";
 import { scoreVastu } from "./scoreVastu";
+import { analyzeEnergy, scoreEnergy } from "./energy";
 import { computeVastuGrid, overlapArea } from "./vastuGrid";
 import type { Layout, PlotInput } from "./types";
 
@@ -104,6 +105,28 @@ describe("generateLayouts — sample project (40x30 ft, East, 3BHK)", () => {
     }
   });
 
+  it("separates room zones and follows the Vastu/energy ordering at balanced strictness", () => {
+    const plans = generateLayouts(SAMPLE, "balanced");
+    const assignments = plans.map((layout) => Object.fromEntries(layout.rooms.map((room) => [room.id, room.zone])));
+    expect(new Set(assignments.map((entry) => JSON.stringify(entry))).size).toBe(3);
+    const vastu = plans.map((layout) => scoreVastu(layout, SAMPLE).score100);
+    const energy = plans.map((layout) => scoreEnergy(analyzeEnergy(SAMPLE, layout)).score100);
+    expect(vastu[0]).toBeGreaterThanOrEqual(vastu[2]);
+    expect(vastu[2]).toBeGreaterThanOrEqual(vastu[1]);
+    expect(energy[1]).toBeGreaterThanOrEqual(energy[2]);
+    expect(energy[2]).toBeGreaterThanOrEqual(energy[0]);
+    for (const layout of plans) {
+      const types = layout.rooms.map((room) => room.type);
+      expect(types).toContain("kitchen");
+      expect(types).toContain("living");
+      expect(types).toContain("masterBedroom");
+      expect(types.some((type) => type === "toilet" || type === "bathroom")).toBe(true);
+      expect(types).toContain("pooja");
+    }
+    expect(generateLayouts(SAMPLE, "balanced")).toEqual(plans);
+    assertLayoutInvariants(SAMPLE, plans);
+  });
+
   it("strict mode never scores lower on ideal count than flexible (per mode)", () => {
     for (const mode of LAYOUT_MODES) {
       const strict = generateLayouts(SAMPLE, "strict").find((l) => l.id === mode);
@@ -169,6 +192,23 @@ describe("generateLayouts — small and narrow plots do not crash", () => {
 });
 
 describe("generateLayouts — required rooms across plot sizes and facings", () => {
+  it("keeps three distinct balanced-strictness assignments and required rooms at target sizes", () => {
+    for (const [length, width] of [[25, 40], [30, 50], [40, 60]]) {
+      const input = { ...SAMPLE, length, width };
+      const layouts = generateLayouts(input, "balanced");
+      const assignments = layouts.map((layout) => JSON.stringify(Object.fromEntries(layout.rooms.map((room) => [room.id, room.zone]))));
+      expect(new Set(assignments).size).toBe(3);
+      for (const layout of layouts) {
+        const types = layout.rooms.map((room) => room.type);
+        expect(types).toContain("kitchen");
+        expect(types).toContain("living");
+        expect(types).toContain("masterBedroom");
+        expect(types.some((type) => type === "toilet" || type === "bathroom")).toBe(true);
+        expect(types).toContain("pooja");
+      }
+    }
+  });
+
   it("places required rooms or reports each missing required room", () => {
     const facings = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] as const;
     for (const [length, width] of [[25, 40], [30, 50], [40, 60], [30, 30]]) {

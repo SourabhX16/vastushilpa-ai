@@ -2,6 +2,8 @@ import {
   ENTRANCE_RULES,
   VASTU_ROOM_CONFIG,
 } from "../data/vastu.config";
+import { getCityById } from "../data/cities";
+import { CLIMATE_ENERGY_PROFILES, orientationFromWall } from "../data/energy.config";
 import type {
   DoorMark,
   EntranceMark,
@@ -341,19 +343,24 @@ function zoneRankCost(spec: RoomSpec, zone: VastuZoneId): number {
 }
 
 /** 0..~2 climate/objective cost depending on the room's energy profile. */
-function energyCost(spec: RoomSpec, lengthFt: number, widthFt: number, rect: Rect): number {
+function energyCost(spec: RoomSpec, lengthFt: number, widthFt: number, rect: Rect, cityId: string): number {
   const cfg = VASTU_ROOM_CONFIG[spec.type];
-  const c = rectCenter(rect);
-  const northNess = 1 - c.y / widthFt;
-  const southNess = c.y / widthFt;
-  const eastNess = c.x / lengthFt;
-  const westNess = 1 - c.x / lengthFt;
+  const city = getCityById(cityId);
+  const factors = CLIMATE_ENERGY_PROFILES[city?.climateZone ?? "composite"].daylightOrientationFactor;
+  const touched = (["N", "E", "S", "W"] as WallSide[]).filter((wall) =>
+    wallTouchesPlotSide(rect, wall, lengthFt, widthFt),
+  );
+  // Generated daylight windows use these same exterior walls. Weight a room
+  // by the scorer's own orientation factors rather than its zone centroid.
+  const orientations = (touched.length ? touched : ["N", "E", "S", "W"] as WallSide[])
+    .map(orientationFromWall);
+  const mean = orientations.reduce((sum, orientation) => sum + factors[orientation], 0) / orientations.length;
+  const best = Math.max(...Object.values(factors));
+  const worst = Math.min(...Object.values(factors));
   if (cfg.daylight) {
-    // Living/bedroom-type rooms: favour the cool morning light of N/NE/E.
-    return Math.max(0, 1.9 - (0.7 * northNess + 1.2 * eastNess));
+    return best > worst ? (best - mean) / (best - worst) : 0;
   }
-  // Service/heat rooms: push toward the hot W/S sides.
-  return Math.max(0, 0.9 * southNess + 1.1 * westNess);
+  return best > worst ? (mean - worst) / (best - worst) : 0;
 }
 
 function isAllowedZone(
@@ -376,12 +383,16 @@ function enumerateCandidates(
   inner: Rect,
   entrance: EntranceMark,
   facing: PlotInput["facing"],
+  cityId: string,
   mode: LayoutMode,
 ): Candidate[] {
   const universe = spec.roadAccess
     ? roadAdjacentZones(facing)
     : ALL_ZONES.filter((z) => z !== "C");
-  const allowed = universe.filter((z) => isAllowedZone(tierList, spec, z));
+  const effectiveTiers: ("preferred" | "acceptable" | "all")[] = mode !== "vastu-first" && tierList.includes("preferred")
+    ? tierList.includes("acceptable") ? tierList : [...tierList, "acceptable"]
+    : tierList;
+  const allowed = universe.filter((z) => isAllowedZone(effectiveTiers, spec, z));
 
   const sets: VastuZoneId[][] = [];
   for (const z of allowed) sets.push([z]);
@@ -406,7 +417,7 @@ function enumerateCandidates(
     const boxCenter = rectCenter(box);
     const vastu =
       zones.reduce((sum, z) => sum + zoneRankCost(spec, z), 0) / zones.length;
-    const energy = energyCost(spec, lengthFt, widthFt, box);
+    const energy = energyCost(spec, lengthFt, widthFt, box, cityId);
     const entryAdj =
       spec.entranceWeight *
       (Math.hypot(
@@ -672,6 +683,7 @@ function buildLayoutForMode(
         inner,
         entrance,
         plot.facing,
+        plot.city,
         mode,
       );
       let chosen: { candidate: Candidate; rect: Rect } | null = null;
@@ -714,7 +726,7 @@ function buildLayoutForMode(
     for (const tierList of passLists) {
       for (const spec of specs.filter((entry) => entry.required)) {
         if (!remaining.has(spec)) continue;
-        for (const candidate of enumerateCandidates(spec, tierList, lengthFt, widthFt, inner, entrance, plot.facing, mode)) {
+        for (const candidate of enumerateCandidates(spec, tierList, lengthFt, widthFt, inner, entrance, plot.facing, plot.city, mode)) {
           const free = subtractAll(candidate.box, placedRects.filter((r) => overlapArea(r, candidate.box) > 1e-9));
           const rect = fitRoomInFree(spec, free, roadWalls);
           if (!rect) continue;
@@ -730,7 +742,7 @@ function buildLayoutForMode(
     for (const spec of specs.filter((entry) => !entry.required)) {
       let placed = false;
       for (const tierList of passLists) {
-        for (const candidate of enumerateCandidates(spec, tierList, lengthFt, widthFt, inner, entrance, plot.facing, mode)) {
+        for (const candidate of enumerateCandidates(spec, tierList, lengthFt, widthFt, inner, entrance, plot.facing, plot.city, mode)) {
           const free = subtractAll(candidate.box, placedRects.filter((r) => overlapArea(r, candidate.box) > 1e-9));
           const rect = fitRoomInFree(spec, free, roadWalls);
           if (!rect) continue;
