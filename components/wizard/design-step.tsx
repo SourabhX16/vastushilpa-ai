@@ -32,6 +32,7 @@ import { SeasonSwitch, SunPathPanel } from "./energy/sun-path-panel";
 import { TradeoffExplainer } from "./energy/tradeoff-explainer";
 import { buildDxf } from "@/lib/export/dxf";
 import { computeVastuGrid } from "@/lib/engine/vastuGrid";
+import { formatProgrammeCoverage, getProgrammeCoverage } from "@/lib/export/programmeCoverage";
 
 const Model3D = dynamic(
   () => import("./model-3d").then((m) => m.Model3D),
@@ -261,10 +262,12 @@ export function DesignStep() {
         </TabsList>
         {layouts.map((layout) => {
           const layoutScore = vastuByLayout.get(layout.id)!;
+          const coverage = getProgrammeCoverage(input, layout);
           const layoutEnergy = energyState.results.get(layout.id) ?? null;
           const layoutStructural = structuralByLayout.get(layout.id) ?? null;
           return (
             <TabsContent key={layout.id} value={layout.id} className="focus-visible:outline-none">
+              <ProgrammeCoverageStrip coverage={coverage} />
               <div className="grid gap-4 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,1fr)]">
                 {/* plan column */}
                 <div className="space-y-4">
@@ -439,7 +442,7 @@ export function DesignStep() {
 
                 {/* score column */}
                 <div className="space-y-4">
-                  <VastuScoreCard score={layoutScore} />
+                  <VastuScoreCard score={layoutScore} hasMissing={coverage.unplaced.length > 0} />
 
                   <Card className="border-gold-500/30 bg-sand-50/80">
                     <CardHeader className="pb-3">
@@ -513,7 +516,20 @@ function scoreMeta(score: number): { title: string; detail: string } {
   return SCORE_META["<70"];
 }
 
-function VastuScoreCard({ score }: { score: VastuResult }) {
+function ProgrammeCoverageStrip({ coverage }: { coverage: ReturnType<typeof getProgrammeCoverage> }) {
+  const missing = coverage.unplaced.length > 0;
+  return (
+    <div className="mb-3 flex flex-wrap items-center gap-2 rounded-md border border-gold-500/30 bg-sand-50/70 px-3 py-2 text-xs">
+      <span className="font-semibold text-ink">Programme coverage</span>
+      <Badge className={missing ? "border-amber-600/30 bg-amber-100 text-amber-900" : "border-emerald-700/30 bg-emerald-50 text-emerald-800"}>
+        {missing ? "Warning" : "All requested spaces placed"}
+      </Badge>
+      {missing && <span className="text-muted-foreground">{formatProgrammeCoverage(coverage)}</span>}
+    </div>
+  );
+}
+
+function VastuScoreCard({ score, hasMissing }: { score: VastuResult; hasMissing: boolean }) {
   const meta = scoreMeta(score.score100);
   const pct = clamp(score.score100, 0, 100);
 
@@ -529,6 +545,7 @@ function VastuScoreCard({ score }: { score: VastuResult }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
+        {hasMissing && <p className="text-[11px] text-amber-800">Score covers placed rooms only</p>}
         <div className="flex items-end gap-3">
           <span className="font-display text-5xl leading-none text-maroon-500" aria-live="polite">
             {score.score100}

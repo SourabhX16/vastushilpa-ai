@@ -1,6 +1,7 @@
 import Drawing from "dxf-writer";
 import type { PlotInput, Layout, VastuGridCell } from "@/lib/engine/types";
 import type { StructuralResult } from "@/lib/engine/structural/types";
+import { getProgrammeCoverage } from "./programmeCoverage";
 
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const writerHandle = require("dxf-writer/src/Handle") as { seed: number };
@@ -126,6 +127,10 @@ function generateDxf(input: DxfExportInput): string {
   const bottom = -1700;
   text("TEXT", 0, bottom, 300, input.projectName);
   text("TEXT", 0, bottom - 360, 200, `Layout: ${layout.name}`);
+  const unplaced = getProgrammeCoverage(plot, layout).unplaced;
+  if (unplaced.length > 0) {
+    text("TEXT", 0, bottom - 500, 200, `Not placed on ground floor: ${unplaced.map((space) => space.label).join(", ")}`);
+  }
   text("TEXT", 0, bottom - 620, 200, `Vastu score: ${input.vastuScore}`);
   text("TEXT", 0, bottom - 880, 180, "Preliminary design. Must be verified by a licensed structural engineer.");
   text("TEXT", 0, bottom - 1120, 180, `Date: ${input.date}`);

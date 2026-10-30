@@ -5,6 +5,7 @@ import { generateLayouts } from "@/lib/engine/generateLayouts";
 import { computeVastuGrid } from "@/lib/engine/vastuGrid";
 import { runStructural } from "@/lib/engine/structural";
 import { scoreVastu } from "@/lib/engine/scoreVastu";
+import { getProgrammeCoverage } from "./programmeCoverage";
 import type { PlotInput } from "@/lib/engine/types";
 
 const SAMPLE: PlotInput = {
@@ -98,7 +99,29 @@ describe("DXF export", () => {
       expect(allNumbers.every(Number.isFinite)).toBe(true);
       const textLayer = entities.filter((e) => e.type === "TEXT" && e.layer === "TEXT").map((e) => e.text ?? "");
       expect(textLayer.some((value) => value.includes(`Vastu score: ${score}`))).toBe(true);
+      const missing = getProgrammeCoverage(SAMPLE, layout).unplaced.map((space) => space.label).join(", ");
+      expect(textLayer).toContain(`Not placed on ground floor: ${missing}`);
       expect(textLayer.some((value) => value.includes("Preliminary design. Must be verified by a licensed structural engineer."))).toBe(true);
     });
   }
+
+  it("omits the title-block omission line when all requested spaces fit", () => {
+    const plot: PlotInput = { ...SAMPLE, length: 40, width: 60 };
+    const layout = generateLayouts(plot, "balanced").find((item) => item.id === "balanced")!;
+    const output = buildDxf({
+      plot,
+      layout,
+      structural: runStructural(plot, layout),
+      vastuGrid: computeVastuGrid(plot).cells,
+      projectName: "Large plot",
+      vastuScore: scoreVastu(layout, plot).score100,
+      date: "2026-10-30",
+    });
+    const dxf = parser.parseSync(output);
+    expect(dxf).toBeTruthy();
+    const textLayer = (dxf!.entities as unknown as ParsedEntity[])
+      .filter((entity) => entity.type === "TEXT" && entity.layer === "TEXT")
+      .map((entity) => entity.text ?? "");
+    expect(textLayer.some((value) => value.startsWith("Not placed on ground floor:"))).toBe(false);
+  });
 });
