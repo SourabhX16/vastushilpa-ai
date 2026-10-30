@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { AlertTriangle, CircleDashed, Info, SlidersHorizontal } from "lucide-react";
+import { AlertTriangle, CircleDashed, Download, Info, SlidersHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
@@ -30,6 +30,8 @@ import { SolarRainCards } from "./energy/solar-rain-cards";
 import { AssumptionsPanel } from "./energy/assumptions-panel";
 import { SeasonSwitch, SunPathPanel } from "./energy/sun-path-panel";
 import { TradeoffExplainer } from "./energy/tradeoff-explainer";
+import { buildDxf } from "@/lib/export/dxf";
+import { computeVastuGrid } from "@/lib/engine/vastuGrid";
 
 const Model3D = dynamic(
   () => import("./model-3d").then((m) => m.Model3D),
@@ -287,6 +289,41 @@ export function DesignStep() {
                         showVentilationArrows={showVentilationArrows}
                         showSunShading={showSunShading}
                       />
+                      {layout.id === current.id && (
+                      <div className="space-y-1">
+                        <button
+                          type="button"
+                          disabled={!layout || !layoutStructural}
+                          title={!layout || !layoutStructural ? "Generate a layout and structural plan before exporting." : "Export this layout as a DXF drawing."}
+                          onClick={() => {
+                            if (!layout || !layoutStructural) return;
+                            const dxf = buildDxf({
+                              plot: input,
+                              layout,
+                              structural: layoutStructural,
+                              vastuGrid: computeVastuGrid(input).cells,
+                              projectName: `${input.bedrooms}BHK ${input.city}`,
+                              vastuScore: layoutScore.score100,
+                              date: new Date().toISOString().slice(0, 10),
+                            });
+                            const blob = new Blob([dxf], { type: "application/dxf" });
+                            const url = URL.createObjectURL(blob);
+                            const anchor = document.createElement("a");
+                            const lengthFt = input.unit === "ft" ? input.length : input.length / 0.3048;
+                            const widthFt = input.unit === "ft" ? input.width : input.width / 0.3048;
+                            anchor.href = url;
+                            anchor.download = `vastushilpa-${layout.id}-${lengthFt}x${widthFt}ft.dxf`;
+                            anchor.click();
+                            URL.revokeObjectURL(url);
+                          }}
+                          className="inline-flex items-center gap-1.5 rounded-md border border-gold-500/50 bg-white px-3 py-1.5 text-xs font-medium text-maroon-500 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          <Download className="h-3.5 w-3.5" aria-hidden />
+                          Export DXF
+                        </button>
+                        <p className="text-[11px] text-muted-foreground">Opens in AutoCAD, LibreCAD, DraftSight</p>
+                      </div>
+                      )}
                       <div className="flex flex-wrap items-center gap-3">
                         <label className="flex cursor-pointer items-center gap-1.5 text-xs text-muted-foreground">
                           <input
