@@ -79,6 +79,8 @@ interface RoomSpec {
   entranceWeight: number;
   /** Hard requirement: bay/break room must touch a road-facing side. */
   roadAccess: boolean;
+  /** Required rooms are packed before any yielding room. */
+  required: boolean;
   /** Vastu-preferred door walls (pooja), falls back to circulation logic. */
   doorWalls?: WallSide[];
 }
@@ -92,8 +94,9 @@ function buildRoomProgram(plot: PlotInput): RoomSpec[] {
   const cfg = VASTU_ROOM_CONFIG;
   const specs: RoomSpec[] = [];
 
-  const push = (spec: Omit<RoomSpec, "type">, type: PlanRoom["type"]) => {
-    specs.push({ type, ...spec });
+  const push = (spec: Omit<RoomSpec, "type" | "required">, type: PlanRoom["type"]) => {
+    const required = ["pooja", "masterBedroom", "verandah", "bathroom", "toilet", "kitchen", "staircase", "living"].includes(type);
+    specs.push({ type, required, ...spec });
   };
   const fromCfg = (type: PlanRoom["type"]) => {
     const r = cfg[type];
@@ -644,12 +647,17 @@ function buildLayoutForMode(
     notes.push("Plot too small for a family home; several rooms are omitted below.");
   }
 
-  const specs = buildRoomProgram(plot);
+  const specs = buildRoomProgram(plot).sort((a, b) => {
+    if (a.required !== b.required) return a.required ? -1 : 1;
+    const optionalOrder = (spec: RoomSpec) =>
+      spec.type === "parking" ? 0 : spec.type === "store" ? 1 : spec.type === "dining" ? 2 : 3;
+    return optionalOrder(a) - optionalOrder(b);
+  });
   const placedRooms: PlanRoom[] = [];
   const placedRects: Rect[] = [];
   const relaxed: string[] = [];
   const dropped: string[] = [];
-  const remaining = new Set(specs);
+  let remaining = new Set(specs);
 
   const passLists = PASS_TIERS[strictness];
   for (let passIndex = 0; passIndex < passLists.length; passIndex++) {
@@ -697,12 +705,56 @@ function buildLayoutForMode(
     if (remaining.size === 0) break;
   }
 
+  // If a required room still cannot fit, clear the optional programme and
+  // retry once with only required rooms so yielded space cannot block it.
+  if (specs.some((spec) => spec.required && remaining.has(spec))) {
+    placedRooms.length = 0;
+    placedRects.length = 0;
+    remaining = new Set(specs.filter((spec) => spec.required));
+    for (const tierList of passLists) {
+      for (const spec of specs.filter((entry) => entry.required)) {
+        if (!remaining.has(spec)) continue;
+        for (const candidate of enumerateCandidates(spec, tierList, lengthFt, widthFt, inner, entrance, plot.facing, mode)) {
+          const free = subtractAll(candidate.box, placedRects.filter((r) => overlapArea(r, candidate.box) > 1e-9));
+          const rect = fitRoomInFree(spec, free, roadWalls);
+          if (!rect) continue;
+          const room = buildRoom(spec, rect, lengthFt, widthFt, candidate.zones, roadWalls);
+          placedRooms.push(room);
+          placedRects.push(room.rect);
+          remaining.delete(spec);
+          break;
+        }
+      }
+      if (remaining.size === 0) break;
+    }
+    for (const spec of specs.filter((entry) => !entry.required)) {
+      let placed = false;
+      for (const tierList of passLists) {
+        for (const candidate of enumerateCandidates(spec, tierList, lengthFt, widthFt, inner, entrance, plot.facing, mode)) {
+          const free = subtractAll(candidate.box, placedRects.filter((r) => overlapArea(r, candidate.box) > 1e-9));
+          const rect = fitRoomInFree(spec, free, roadWalls);
+          if (!rect) continue;
+          const room = buildRoom(spec, rect, lengthFt, widthFt, candidate.zones, roadWalls);
+          placedRooms.push(room);
+          placedRects.push(room.rect);
+          remaining.delete(spec);
+          placed = true;
+          break;
+        }
+        if (placed) break;
+      }
+      if (!placed) remaining.add(spec);
+    }
+  }
+
   for (const spec of specs) {
     if (!remaining.has(spec)) continue;
     if (spec.type === "bedroom" || spec.type === "childrenBedroom") {
       dropped.push(`${spec.label} moved to the notional first floor (ground footprint is full).`);
     } else {
-      dropped.push(`${spec.label} omitted: the ground-floor footprint is too full or too small.`);
+      dropped.push(spec.required
+        ? `${spec.label} could not be placed: plot too small.`
+        : `${spec.label} omitted: the ground-floor footprint is too full or too small.`);
     }
   }
 

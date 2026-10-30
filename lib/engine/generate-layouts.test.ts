@@ -89,6 +89,21 @@ describe("generateLayouts — sample project (40x30 ft, East, 3BHK)", () => {
     }
   });
 
+  it("keeps every required sample room for every mode and strictness", () => {
+    for (const strictness of ["strict", "balanced", "flexible"] as const) {
+      const layouts = generateLayouts(SAMPLE, strictness);
+      assertLayoutInvariants(SAMPLE, layouts);
+      for (const layout of layouts) {
+        const types = layout.rooms.map((room) => room.type);
+        expect(types).toContain("kitchen");
+        expect(types).toContain("living");
+        expect(types).toContain("masterBedroom");
+        expect(types.some((type) => type === "toilet" || type === "bathroom")).toBe(true);
+        expect(types).toContain("pooja");
+      }
+    }
+  });
+
   it("strict mode never scores lower on ideal count than flexible (per mode)", () => {
     for (const mode of LAYOUT_MODES) {
       const strict = generateLayouts(SAMPLE, "strict").find((l) => l.id === mode);
@@ -150,5 +165,26 @@ describe("generateLayouts — small and narrow plots do not crash", () => {
   it("throws on non-positive dimensions", () => {
     expect(() => generateLayouts({ ...SAMPLE, length: -3 })).toThrow(/positive/);
     expect(() => generateLayouts({ ...SAMPLE, width: 0 })).toThrow(/positive/);
+  });
+});
+
+describe("generateLayouts — required rooms across plot sizes and facings", () => {
+  it("places required rooms or reports each missing required room", () => {
+    const facings = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"] as const;
+    for (const [length, width] of [[25, 40], [30, 50], [40, 60], [30, 30]]) {
+      for (const facing of facings) {
+        const input = { ...SAMPLE, length, width, facing };
+        for (const layout of generateLayouts(input)) {
+          for (const [type, label] of [["kitchen", "Kitchen"], ["living", "Living room"], ["masterBedroom", "Master bedroom"], ["pooja", "Pooja room"]] as const) {
+            if (!layout.rooms.some((room) => room.type === type)) {
+              expect(layout.notes.some((note) => note.startsWith(`${label} could not be placed:`))).toBe(true);
+            }
+          }
+          if (!layout.rooms.some((room) => room.type === "toilet" || room.type === "bathroom")) {
+            expect(layout.notes.some((note) => /Bathroom|Toilet.*could not be placed/.test(note))).toBe(true);
+          }
+        }
+      }
+    }
   });
 });
