@@ -111,3 +111,23 @@
     @apply bg-background text-foreground;
   }
 }
+/* A3 heritage drawing sheets */
+.sheets-preview { overflow: auto; }
+.drawing-sheet { position: relative; width: min(100%, 1120px); aspect-ratio: 420 / 297; margin-inline: auto; padding: 1.5%; background: #faf6ec; color: #2c2822; box-shadow: 0 8px 28px #35121c22; font-size: clamp(9px, .78vw, 13px); line-height: 1.3; }
+.sheet-border { position: relative; display: flex; flex-direction: column; width: 100%; height: 100%; border: 1px solid #8f7024; outline: 1px solid #b08d3e; outline-offset: 3px; padding: 2.5%; }
+.ornament { position:absolute; z-index:1; color:#9c7b35; font: 20px Georgia,serif; font-style:normal; }.top-left{top:2px;left:4px}.top-right{top:2px;right:4px;transform:scaleX(-1)}.bottom-left{bottom:2px;left:4px;transform:scaleY(-1)}.bottom-right{bottom:2px;right:4px;transform:scale(-1)}
+.sheet-content { min-height:0; flex:1; overflow:hidden; }.sheet-content h2 { margin: .4em 0 .25em; color:#641d28; font: 600 1.08em Georgia,serif; }.sheet-content p,.sheet-content li { margin:.2em 0; }.sheet-content ul{margin:.2em 0;padding-left:1.2em}.sheet-content table{width:100%;border-collapse:collapse;font-size:.91em;line-height:1.18}.sheet-content th,.sheet-content td{padding:.24em .4em;border:1px solid #bba878;text-align:left;vertical-align:top}.sheet-content th{background:#eee3ce;color:#4b2222}.sheet-columns{display:grid;grid-template-columns:1fr 1fr;gap:2%;height:100%}.sheet-columns>section{min-width:0;overflow:hidden}.sheet-warning{padding:.55em;border:1px solid #a94e2a;background:#f5e2d4;font-weight:700}.unverified-mark,.estimated-mark{display:inline-block;border:1px solid #9a6e30;border-radius:3px;padding:0 .3em;color:#6f4d1d;font-size:.72em;font-weight:700;white-space:nowrap}.estimated-mark{border-color:#4c7d76;color:#28625b}.sheet-titleblock{display:grid;grid-template-columns:1fr 1fr 1.5fr;gap:1%;border-top:2px solid #8f7024;margin-top:.5%;padding-top:.5%;font-size:.78em}.sheet-titleblock>div{display:flex;flex-direction:column;gap:.15em}.sheet-titleblock>div+div{border-left:1px solid #b08d3e;padding-left:3%}.sheet-titleblock b{color:#641d28}.sheet-titleblock span{font-size:.9em}.plot-diagram{width:100%;height:72%;max-height:65vh}.plot-diagram text{font-size:10px;fill:#382e28}.sheet-plan{position:relative;display:flex;flex-direction:column;height:100%;padding:1%}.sheet-plan>div:first-child{flex:1;min-height:0}.sheet-plan svg{width:100%;height:100%;max-height:none}.sheet-compass{position:absolute;right:3%;top:3%;display:grid;justify-items:center;color:#641d28;font-size:1.1em}.sheet-compass span{font-size:2em;line-height:.8}.sheet-compass small{font-size:.7em}.room-key{display:flex;flex-wrap:wrap;gap:.25em .8em;max-height:20%;overflow:hidden;border-top:1px solid #b08d3e;padding-top:.3em}.room-key span{font-size:.82em}.score-block{display:inline-flex;align-items:baseline;gap:.5em}.score-block strong{color:#641d28;font:700 5em Georgia,serif}.score-block p{margin-left:1em}.summary-line{font-weight:700;color:#641d28}.energy-top{display:flex;align-items:center;gap:2%}.energy-item{display:inline-block;margin-right:.7em}.sun-diagram{width:100%;height:105px}
+@media print {
+  @page { size: A3 landscape; margin: 0; }
+  html,body{width:420mm!important;margin:0!important;padding:0!important;background:#faf6ec!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  body *{visibility:hidden!important}
+  .sheets-preview,.sheets-preview *{visibility:visible!important}
+  .sheets-preview{position:absolute!important;inset:0!important;width:420mm!important;overflow:visible!important;display:block!important}
+  .drawing-sheet{box-sizing:border-box!important;width:420mm!important;height:297mm!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:6mm!important;box-shadow:none!important;page-break-after:always!important;break-after:page!important;break-inside:avoid!important;overflow:hidden!important;font-size:9pt!important;-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}
+  .drawing-sheet:last-child{page-break-after:auto!important;break-after:auto!important}
+  .sheet-border{box-sizing:border-box!important;padding:8mm!important}
+  .sheet-content{overflow:hidden!important}
+  .sheet-plan svg,.plot-diagram,.sun-diagram{max-width:100%!important;max-height:100%!important}
+  .sheet-content table{font-size:8.5pt!important}
+  .sheets-toolbar,body>div>header,body>div>footer,[data-stepper],.hero,.heritage-background,.background-layer{display:none!important}
+}

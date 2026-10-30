@@ -6,7 +6,6 @@ import {
   ChevronRight,
   Loader2,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
@@ -14,6 +13,7 @@ import { InputsStep } from "./wizard/inputs-step";
 import { RulesStep } from "./wizard/rules-step";
 import { useWizardStore } from "./wizard/store";
 import { DesignStep } from "./wizard/design-step";
+import { SheetsStep } from "./wizard/sheets-step";
 import { isPlotFormValid, validatePlotInput } from "./wizard/plot-validation";
 
 const STEPS = [
@@ -111,19 +111,7 @@ export default function WizardShell() {
               {step === 0 && <InputsStep />}
               {step === 1 && <RulesStep />}
               {step === 2 && <DesignStep />}
-              {step >= 3 && (
-                <div className="flex min-h-[240px] flex-col items-center justify-center text-center">
-                  <h3 className="font-display text-2xl text-maroon-500">
-                    {STEPS[step].label}
-                  </h3>
-                  <p className="mt-2 max-w-md text-sm text-muted-foreground">
-                    {STEPS[step].hint}
-                  </p>
-                  <Badge variant="secondary" className="mt-4">
-                    Empty slot — wired up in the next step
-                  </Badge>
-                </div>
-              )}
+              {step === 3 && <SheetsStep />}
             </div>
             <div className="mt-4 flex items-center justify-between">
               <Button
