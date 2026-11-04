@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Marcellus, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 
@@ -26,6 +26,11 @@ export const metadata: Metadata = {
   title: "Vastushilpa AI",
   description:
     "Ancient wisdom. Modern engineering. One plan. Vastu-aligned house plans with IS 456 structural checks. Preliminary design, not for construction.",
+  manifest: "/manifest.webmanifest",
+};
+
+export const viewport: Viewport = {
+  themeColor: "#5F2B1C",
 };
 
 export default function RootLayout({
